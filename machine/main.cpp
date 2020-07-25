@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdlib.h>
+#include <string.h>
 #include "cmd.h"
 
 void gen_mua()
@@ -53,18 +53,38 @@ void run_mua()
     int stack_address = 0;
     unsigned char cmd;
     unsigned char thread_stack[1024];
+
+    int *temp_int;
+
     while (cmd_address < mua_size)
     {
         cmd = mua[cmd_address++];
         if (cmd == CMD_PUSH_INT)
         {
             memcpy(thread_stack + stack_address, mua + cmd_address, 4);
-            printf("%d\n", (int) cmd);
             cmd_address += 4;
+            stack_address += 4;
         }
-        else if (cmd == CMD_MUL_INT_INT || cmd == CMD_ADD_INT_INT || cmd == CMD_PRINT || cmd == CMD_EXIT)
+        else if (cmd == CMD_MUL_INT_INT)
         {
-            printf("%d\n", cmd);
+            temp_int = (int*) (thread_stack + stack_address - 8);
+            temp_int[0] = temp_int[0] * temp_int[1];
+            stack_address -= 4;
+        }
+        else if (cmd == CMD_ADD_INT_INT)
+        {
+            temp_int = (int*) (thread_stack + stack_address - 8);
+            temp_int[0] = temp_int[0] + temp_int[1];
+            stack_address -= 4;
+        }
+        else if (cmd == CMD_PRINT)
+        {
+            temp_int = (int*) (thread_stack + stack_address - 4);
+            printf("%d\n", *temp_int);
+        }
+        else if (cmd == CMD_EXIT)
+        {
+            break;
         }
         else
         {
