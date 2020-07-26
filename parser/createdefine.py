@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 import origindefines
 
@@ -159,12 +160,13 @@ def gen_defines():
 	gen_cmd_size_defines()
 	gen_cmd_return_data_type_defines()
 
+	root_path = os.path.split(sys.argv[0])[0]
 	lines.append("")
-	f = open(sys.argv[0].replace("/createdefine.py", "/defines.py"), "w")
+	f = open(os.path.join(root_path, "defines.py"), "w")
 	f.write("\n".join(lines))
 	f.close()
 
-	f = open(sys.argv[0].replace("/createdefine.py", "/cmd.h"), "w")
+	f = open(os.path.join(root_path, "../machine/cmd.h"), "w")
 	f.write("\n".join(["const int %s = %s;" % (k, v) for k, v in sorted(all_cmd.iteritems(), key=lambda items: items[1])]))
 	f.close()
 

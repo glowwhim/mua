@@ -1,15 +1,22 @@
 # -*- coding: utf-8 -*-
 from parser import *
+import os
+import sys
+import lexer
+
+
+CODE_PATH = "../code/code.txt"
+OUTPUT_PATH = "../code/output.txt"
 
 
 if __name__ == '__main__':
-	import sys
-	import lexer
-	f = open(sys.argv[0].replace("/main.py", "/code.txt"))
+	root_path = os.path.split(sys.argv[0])[0]
+	input_path = os.path.join(root_path, CODE_PATH)
+	output_path = os.path.join(root_path, OUTPUT_PATH)
+	grammar_path = os.path.join(root_path, "grammar.py")
+	f = open(os.path.join(root_path, CODE_PATH))
 	code = f.read()
 	f.close()
-	grammar_path = sys.argv[0].replace("/main.py", "/grammar.py")
-	output_path = sys.argv[0].replace("/main.py", "/output.txt")
 	context = LRContext()
 	g = Grammar.load_from_file(context, grammar_path)
 	token_generator = lexer.token_generator(code)
