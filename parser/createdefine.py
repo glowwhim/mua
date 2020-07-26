@@ -7,7 +7,6 @@ import origindefines
 lines = []
 data_type_list = []
 data_type_define_name = {}
-all_cmd = {}
 cmd_size = {}
 cmd_return_data_type = {}
 
@@ -16,7 +15,6 @@ def add_cmd(cmd, args_size, rtype=None):
 	global lines
 	global cmd_size
 	lines.append("%s = %s" % (cmd, len(cmd_size)))
-	all_cmd[cmd] = len(cmd_size)
 	cmd_size[cmd] = args_size + 1
 	if rtype is not None:
 		cmd_return_data_type[cmd] = rtype
@@ -178,10 +176,6 @@ def gen_defines():
 	lines.append("")
 	f = open(os.path.join(root_path, "defines.py"), "w")
 	f.write("\n".join(lines))
-	f.close()
-
-	f = open(os.path.join(root_path, "../machine/cmd.h"), "w")
-	f.write("\n".join(["const int %s = %s;" % (k, v) for k, v in sorted(all_cmd.iteritems(), key=lambda items: items[1])]))
 	f.close()
 
 
