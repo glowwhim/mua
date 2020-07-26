@@ -10,6 +10,7 @@ void gen_mua()
     unsigned char c;
     int mua_size;
     int d1, d2, d3;
+    float f1, f2, f3;
 
     rfile = fopen("../code/output.txt", "r");
     wfile = fopen("../code/output.mua", "wb");
@@ -24,7 +25,19 @@ void gen_mua()
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
         }
-        else if (cmd == CMD_MUL_INT_INT || cmd == CMD_ADD_INT_INT || cmd == CMD_PRINT || cmd == CMD_EXIT)
+        else if (cmd == CMD_PUSH_FLOAT)
+        {
+            fscanf(rfile, "%f", &f1);
+            fwrite(&f1, 4, 1, wfile);
+        }
+        else if (cmd == CMD_MUL_INT_INT 
+            || cmd == CMD_ADD_INT_INT 
+            || cmd == CMD_MUL_INT_FLOAT 
+            || cmd == CMD_ADD_INT_FLOAT 
+            || cmd == CMD_PRINT_CHAR
+            || cmd == CMD_PRINT_FLOAT
+            || cmd == CMD_PRINT_ADDRESS
+            || cmd == CMD_EXIT)
         {
             continue;
         }
@@ -55,11 +68,18 @@ void run_mua()
     unsigned char thread_stack[1024];
 
     int *temp_int;
+    float *temp_float;
 
     while (cmd_address < mua_size)
     {
         cmd = mua[cmd_address++];
         if (cmd == CMD_PUSH_INT)
+        {
+            memcpy(thread_stack + stack_address, mua + cmd_address, 4);
+            cmd_address += 4;
+            stack_address += 4;
+        }
+        else if (cmd == CMD_PUSH_FLOAT)
         {
             memcpy(thread_stack + stack_address, mua + cmd_address, 4);
             cmd_address += 4;
@@ -77,10 +97,29 @@ void run_mua()
             temp_int[0] = temp_int[0] + temp_int[1];
             stack_address -= 4;
         }
-        else if (cmd == CMD_PRINT)
+        else if (cmd == CMD_MUL_INT_FLOAT)
         {
-            temp_int = (int*) (thread_stack + stack_address - 4);
+            temp_int = (int*) (thread_stack + stack_address - 8);
+            temp_float = (float*) (thread_stack + stack_address - 8);
+            temp_float[0] = temp_int[0] * temp_float[1];
+            stack_address -= 4;
+        }
+        else if (cmd == CMD_ADD_INT_FLOAT)
+        {
+            temp_int = (int*) (thread_stack + stack_address - 8);
+            temp_float = (float*) (thread_stack + stack_address - 8);
+            temp_float[0] = temp_int[0] + temp_float[1];
+            stack_address -= 4;
+        }
+        else if (cmd == CMD_PRINT_INT)
+        {
             printf("%d\n", *((int*) (thread_stack + stack_address - 4)));
+            stack_address -= 4;
+        }
+        else if (cmd == CMD_PRINT_FLOAT)
+        {
+            printf("%lf\n", *((float*) (thread_stack + stack_address - 4)));
+            stack_address -= 4;
         }
         else if (cmd == CMD_EXIT)
         {
