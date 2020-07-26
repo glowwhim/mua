@@ -8,7 +8,6 @@ TOKEN_PROP_LEXEME = "lexeme"
 
 DATA_TYPE_CHAR = "char", "char_value", 1
 DATA_TYPE_INT = "int", "int_value", 4
-DATA_TYPE_ADDRESS = "address", "address_value", 4
 DATA_TYPE_FLOAT = "float", "float_value", 4
 
 

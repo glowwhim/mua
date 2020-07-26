@@ -58,6 +58,10 @@ code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_CHAR], 0)
 add_var(pd[1].lexeme, DATA_TYPE_INT)
 code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_INT], 0)
 
+# $FloatDef -> float var_id ;
+add_var(pd[1].lexeme, DATA_TYPE_FLOAT)
+code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_FLOAT], 0)
+
 # $Expr0 -> char_value
 # $Expr0 -> int_value
 # $Expr0 -> float_value
@@ -82,7 +86,7 @@ code(cmd)
 
 # $Expr14 -> var_id = $Expr14
 var_address, var_type = get_var(fpd.lexeme)
-code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_ADDRESS], var_address)
+code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_INT], var_address)
 cmd = OPERATOR_CMD[(pd[1].lexeme, var_type, pd[2].type)]
 rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
@@ -103,6 +107,7 @@ code(CMD_EXIT)
 # $Statement -> $Print
 # $Statement -> $CharDef
 # $Statement -> $IntDef
+# $Statement -> $FloatDef
 # $Statement -> $While
 # $StatementList -> $Statement
 # $StatementList -> $StatementList $Statement
