@@ -80,7 +80,7 @@ void run_mua()
         else if (cmd == CMD_PRINT)
         {
             temp_int = (int*) (thread_stack + stack_address - 4);
-            printf("%d\n", *temp_int);
+            printf("%d\n", *((int*) (thread_stack + stack_address - 4)));
         }
         else if (cmd == CMD_EXIT)
         {

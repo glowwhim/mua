@@ -1,3 +1,6 @@
 *.mua
 *.out
-.DS_Store
+parser/venv
+*.idea
+*.pyc
+*.DS_Store
