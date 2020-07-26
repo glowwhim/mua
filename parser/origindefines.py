@@ -23,7 +23,7 @@ SYMBOL_RBRACKET = "}"
 
 
 CMD_EXIT = 0
-CMD_FJ = 0
+CMD_FJ = 4
 CMD_JUMP = 4
 
 
