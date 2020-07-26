@@ -103,6 +103,9 @@ _fj_begin()
 # $While -> $WhileCondition $Expr14 ;
 _fj_end()
 
+# $While -> $WhileCondition { $StatementList }
+_fj_end()
+
 # $Program -> $StatementList
 code(CMD_EXIT)
 
