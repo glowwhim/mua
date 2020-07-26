@@ -81,7 +81,7 @@ def gen_print_define():
 	lines.append("")
 	lines.append("SYMBOL_PRINT = 'print'")
 	for data_type in data_type_list:
-		add_cmd("CMD_PRINT_%s" % data_type[0].upper(), 1)
+		add_cmd("CMD_PRINT_%s" % data_type[0].upper(), 0)
 	lines.append("DATA_TYPE_2_PRINT_CMD = {")
 	for data_type in data_type_list:
 		lines.append("\tDATA_TYPE_%s: %s, " % (data_type[0].upper(), "CMD_PRINT_%s" % data_type[0].upper()))

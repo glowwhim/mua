@@ -37,11 +37,14 @@ class CodeParser(object):
 		self.variable_table = VariableTable(None)
 		self.code_list = []
 		self.code_address = 0
+		self.func_address = {}
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
 		self._env = {
 			"copy": _copy_prop,
 			"code": self._code,
+			"add_func": self._add_func,
+			"run_func": self._run_func,
 			"_loop_begin": self._loop_begin,
 			"_fj_begin": self._fj_begin,
 			"_fj_end": self._fj_end,
@@ -51,6 +54,12 @@ class CodeParser(object):
 		}
 		for _s in dir(defines):
 			self._env[_s] = getattr(defines, _s)
+
+	def _add_func(self, name):
+		self.func_address[name] = self.code_address
+
+	def _run_func(self, name):
+		self._code(CMD_RUN, name)
 
 	def _code(self, cmd, *args):
 		self.code_address += CMD_SIZE[cmd]
@@ -70,6 +79,14 @@ class CodeParser(object):
 	def _get_code_address(self):
 		return self.code_address
 
+	def _redirect_func_address(self):
+		for c in self.code_list:
+			if c[0] == CMD_RUN:
+				c[1] = self.func_address[c[1]]
+
+	def do_semantics_finish(self):
+		self._redirect_func_address()
+
 	def do_semantics(self, production, rd, pd):
 		# type: (Production, Token, List[Token]) -> None
 		self._env["rd"] = rd
@@ -79,7 +96,7 @@ class CodeParser(object):
 
 	def output_code(self, path):
 		f = open(path, "w")
-		lines = [str(self.code_address)]
+		lines = [str(self.code_address), str(self.func_address["main"])]
 		for c in self.code_list:
 			cmd = c[0]
 			lines.append("%s %s" % (cmd, " ".join([str(s) for s in c[1:]])))

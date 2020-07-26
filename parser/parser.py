@@ -458,6 +458,7 @@ class Parser(object):
 				state_stack.append(value)
 				cursor += 1
 			elif action == ACTION_ACC:
+				code_parser.do_semantics_finish()
 				print "==============================lr parse acc=============================="
 			else:
 				print "error"

@@ -12,6 +12,14 @@ class FakeObj(object):
         pass
 
 
+def run_func(name):
+    pass
+
+
+def add_func(name):
+    pass
+
+
 def _get_code_address(*args):
     return 0
 
@@ -62,11 +70,17 @@ code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_INT], 0)
 add_var(pd[1].lexeme, DATA_TYPE_FLOAT)
 code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_FLOAT], 0)
 
+# $MethodExpr -> var_id ( )
+run_func(fpd.lexeme)
+
 # $Expr0 -> char_value
 # $Expr0 -> int_value
 # $Expr0 -> float_value
 rd.type = fpd.type
 code(DATA_TYPE_2_PUSH_DATA_CMD[fpd.type], fpd.value)
+
+# $Expr0 -> $MethodExpr
+rd.type = DATA_TYPE_INT
 
 # $Expr0 -> var_id
 var_address, var_type = get_var(fpd.lexeme)
@@ -106,9 +120,15 @@ _fj_end()
 # $While -> $WhileCondition { $StatementList }
 _fj_end()
 
-# $Program -> $StatementList
-code(CMD_EXIT)
+# $FuncDefHead -> int var_id ( )
+add_func(pd[1].lexeme)
 
+# $FuncDef -> $FuncDefHead { $StatementList }
+code(CMD_RETURN)
+
+# $Program -> $FuncDefList
+# $FuncDefList -> $FuncDef
+# $FuncDefList -> $FuncDefList $FuncDef
 # $Statement -> $Expr14 ;
 # $Statement -> $Print
 # $Statement -> $CharDef

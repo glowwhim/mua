@@ -1,9 +1,12 @@
-int a;
-int b;
-a = 1;
-while (a < 101)
+int main()
 {
-    b = b + a;
-    a = a + 1;
+    int a;
+    int b;
+    b = 1;
+    while (b < 101)
+    {
+        a = a + b;
+        b = b + 1;
+    }
+    print a;
 }
-print b;

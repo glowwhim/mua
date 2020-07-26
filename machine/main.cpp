@@ -15,13 +15,16 @@ void gen_mua()
     int cmd;
     unsigned char c;
     int mua_size;
+    int main_address;
     int d1, d2, d3;
     float f1, f2, f3;
 
     rfile = fopen("../code/output.txt", "r");
     wfile = fopen("../code/output.mua", "wb");
     fscanf(rfile, "%d", &mua_size);
+    fscanf(rfile, "%d", &main_address);
     fwrite(&mua_size, 4, 1, wfile);
+    fwrite(&main_address, 4, 1, wfile);
     while (fscanf(rfile, "%d", &cmd) != EOF)
     {
         c = (unsigned char) cmd;
@@ -30,6 +33,7 @@ void gen_mua()
             || cmd == CMD_PUSH_SEGMENT_INT 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
+            || cmd == CMD_RUN
             || cmd == CMD_PUSH_SEGMENT_FLOAT)
         {
             fscanf(rfile, "%d", &d1);
@@ -49,9 +53,9 @@ void gen_mua()
             || cmd == CMD_PRINT_CHAR
             || cmd == CMD_PRINT_INT
             || cmd == CMD_LT_INT_FLOAT
+            || cmd == CMD_RETURN
             || cmd == CMD_LT_INT_INT
-            || cmd == CMD_PRINT_FLOAT
-            || cmd == CMD_EXIT)
+            || cmd == CMD_PRINT_FLOAT)
         {
             continue;
         }
@@ -70,13 +74,14 @@ void run_mua()
 {
     FILE *rfile;
     int mua_size;
+    int cmd_address = 0;
     rfile = fopen("../code/output.mua", "rb");
     fread(&mua_size, 4, 1, rfile);
+    fread(&cmd_address, 4, 1, rfile);
     unsigned char *mua = (unsigned char*) malloc(mua_size);
     fread(mua, mua_size, 1, rfile);
     fclose(rfile);
 
-    int cmd_address = 0;
     int stack_top = 0;
     unsigned char cmd;
     unsigned char thread_stack[1024];
@@ -120,6 +125,18 @@ void run_mua()
         {
             temp_int = (int*) (mua + cmd_address);
             cmd_address = *temp_int;
+        }
+        else if (cmd == CMD_RUN)
+        {
+            temp_int = (int*) (mua + cmd_address);
+            int jump = *temp_int;
+            temp_int = (int*) segment_offset;
+            temp_int[0] = cmd_address + 4;
+            temp_int[1] = segment_offset - thread_stack;
+            cmd_address = jump;
+            segment_offset += 8;
+            stack_top = 0;
+            //printf("run %d %d %d", temp_int[0], temp_int[1], jump);
         }
         else if (cmd == CMD_PUSH_SEGMENT_FLOAT)
         {
@@ -202,17 +219,23 @@ void run_mua()
             printf("%lf\n", *((float*) (segment_offset + stack_top - 4)));
             stack_top -= 4;
         }
-        else if (cmd == CMD_EXIT)
+        else if (cmd == CMD_RETURN)
         {
-            break;
+            temp_int = (int*) (segment_offset - 8);
+            cmd_address = temp_int[0];
+            stack_top = segment_offset - thread_stack - temp_int[1] - 8;
+            segment_offset = thread_stack + temp_int[1];
+            //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
+            if (segment_offset == thread_stack) break;
         }
         else
         {
             printf("unknown cmd %d\n", cmd);
             break;
         }
-        //print_stack(thread_stack, stack_top);
+        //print_stack(segment_offset, stack_top);
     }
+    //printf("exit address %d", cmd_address);
     free(mua);
 }
 
