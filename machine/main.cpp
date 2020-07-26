@@ -11,8 +11,8 @@ void gen_mua()
     int mua_size;
     int d1, d2, d3;
 
-    rfile = fopen("../output.txt", "r");
-    wfile = fopen("../output.mua", "wb");
+    rfile = fopen("../code/output.txt", "r");
+    wfile = fopen("../code/output.mua", "wb");
     fscanf(rfile, "%d", &mua_size);
     fwrite(&mua_size, 4, 1, wfile);
     while (fscanf(rfile, "%d", &cmd) != EOF)
@@ -43,7 +43,7 @@ void run_mua()
 {
     FILE *rfile;
     int mua_size;
-    rfile = fopen("../output.mua", "rb");
+    rfile = fopen("../code/output.mua", "rb");
     fread(&mua_size, 4, 1, rfile);
     unsigned char *mua = (unsigned char*) malloc(mua_size);
     fread(mua, mua_size, 1, rfile);
