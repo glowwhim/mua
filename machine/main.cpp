@@ -36,6 +36,7 @@ void gen_mua()
             || cmd == CMD_SET_FLOAT_FLOAT
             || cmd == CMD_ADD_INT_FLOAT 
             || cmd == CMD_PRINT_CHAR
+            || cmd == CMD_LT_INT_FLOAT
             || cmd == CMD_PRINT_FLOAT
             || cmd == CMD_EXIT)
         {
@@ -67,6 +68,7 @@ void run_mua()
     unsigned char cmd;
     unsigned char thread_stack[1024];
 
+    char *temp_char;
     int *temp_int;
     float *temp_float;
 
@@ -113,12 +115,25 @@ void run_mua()
             temp_float[0] = temp_int[0] + temp_float[1];
             stack_address -= 4;
         }
+        else if (cmd == CMD_LT_INT_FLOAT)
+        {
+            temp_char = (char*) (thread_stack + stack_address - 8);
+            temp_int = (int*) (thread_stack + stack_address - 8);
+            temp_float = (float*) (thread_stack + stack_address - 8);
+            temp_char[0] = temp_int[0] < temp_float[1];
+            stack_address -= 7;
+        }
         else if (cmd == CMD_SET_FLOAT_FLOAT)
         {
             temp_int = (int*) (thread_stack + stack_address - 4);
             temp_float = (float*) (thread_stack + stack_address - 8);
             ((float*) (thread_stack + *temp_int))[0] = temp_float[0];
             stack_address -= 8;
+        }
+        else if (cmd == CMD_PRINT_CHAR)
+        {
+            printf("%d\n", *((char*) (thread_stack + stack_address - 1)));
+            stack_address -= 1;
         }
         else if (cmd == CMD_PRINT_INT)
         {
