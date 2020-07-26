@@ -48,7 +48,7 @@ pd = [FakeObj(), ]
 
 # ==============================grammar are follows==============================
 # $Print -> print $Expr14 ;
-code(CMD_PRINT)
+code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
 
 # $CharDef -> char var_id ;
 add_var(pd[1].lexeme, DATA_TYPE_CHAR)
