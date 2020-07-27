@@ -49,6 +49,7 @@ class CodeParser(object):
 			"_fj_begin": self._fj_begin,
 			"_fj_end": self._fj_end,
 			"_get_code_address": self._get_code_address,
+			"get_func_return_type": self._get_func_return_type,
 			"add_var": self.variable_table.add_var,
 			"get_var": self.variable_table.get_var,
 		}

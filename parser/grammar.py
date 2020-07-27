@@ -12,6 +12,10 @@ class FakeObj(object):
         pass
 
 
+def get_func_return_type(name):
+    return 0
+
+
 def run_func(name):
     pass
 
@@ -55,6 +59,9 @@ pd = [FakeObj(), ]
 
 
 # ==============================grammar are follows==============================
+# $Return -> return $Expr14 ;
+code(DATA_TYPE_2_RETURN_CMD[pd[1].type])
+
 # $Print -> print $Expr14 ;
 code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
 
@@ -72,6 +79,7 @@ code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_FLOAT], 0)
 
 # $MethodExpr -> var_id ( )
 run_func(fpd.lexeme)
+rd.lexeme = fpd.lexeme
 
 # $Expr0 -> char_value
 # $Expr0 -> int_value
@@ -80,7 +88,7 @@ rd.type = fpd.type
 code(DATA_TYPE_2_PUSH_DATA_CMD[fpd.type], fpd.value)
 
 # $Expr0 -> $MethodExpr
-rd.type = DATA_TYPE_INT
+rd.type = get_func_return_type(fpd.lexeme)
 
 # $Expr0 -> var_id
 var_address, var_type = get_var(fpd.lexeme)
@@ -123,14 +131,18 @@ _fj_end()
 # $FuncDefHead -> int var_id ( )
 add_func(pd[1].lexeme, DATA_TYPE_INT)
 
+# $FuncDefHead -> float var_id ( )
+add_func(pd[1].lexeme, DATA_TYPE_FLOAT)
+
 # $FuncDef -> $FuncDefHead { $StatementList }
-code(CMD_RETURN)
+code(CMD_RETURN_INT)
 
 # $Program -> $FuncDefList
 # $FuncDefList -> $FuncDef
 # $FuncDefList -> $FuncDefList $FuncDef
 # $Statement -> $Expr14 ;
 # $Statement -> $Print
+# $Statement -> $Return
 # $Statement -> $CharDef
 # $Statement -> $IntDef
 # $Statement -> $FloatDef

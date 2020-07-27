@@ -5,6 +5,7 @@ from defines import *
 KEYWORD = [DATA_TYPE_SYMBOL[d] for d in ALL_DATA_TYPE] + [
 	SYMBOL_WHILE,
 	SYMBOL_PRINT,
+	SYMBOL_RETURN,
 ]
 SPACE_CHAR = [" ", "\t", "\n"]
 SEPARATOR = [

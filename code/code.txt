@@ -1,6 +1,6 @@
-int test()
+float test()
 {
-    print 2;
+    return 998.9;
 }
 
 
