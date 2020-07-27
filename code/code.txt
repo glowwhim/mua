@@ -1,19 +1,10 @@
-float test()
+int test()
 {
-    return 998.9;
+    return 998;
 }
 
 
 int main()
 {
-    int a;
-    int b;
-    a = 0;
-    b = 1;
-    while (b < 101)
-    {
-        a = a + b;
-        b = b + 1;
-    }
-    print a;
+    print 1 + test();
 }

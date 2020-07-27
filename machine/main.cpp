@@ -93,10 +93,10 @@ void run_mua()
     fread(mua, mua_size, 1, rfile);
     fclose(rfile);
 
-    int stack_top = 0;
     unsigned char cmd;
     unsigned char thread_stack[1024];
     unsigned char *segment_offset = thread_stack + 8;
+    unsigned char *stack_top = segment_offset;
     ((int*) thread_stack)[0] = 0;
     ((int*) thread_stack)[1] = 0;
 
@@ -110,7 +110,7 @@ void run_mua()
         //printf("%d: %d\n", cmd_address-1, cmd);
         if (cmd == CMD_PUSH_INT || cmd == CMD_PUSH_FLOAT)
         {
-            memcpy(segment_offset + stack_top, mua + cmd_address, 4);
+            memcpy(stack_top, mua + cmd_address, 4);
             cmd_address += 4;
             stack_top += 4;
         }
@@ -120,13 +120,13 @@ void run_mua()
             unsigned char *int2 = segment_offset + temp_int[0];
             int i = *(int*)int2;
             //printf("push setgment int from %d to %d = %d\n", temp_int[0], stack_top, i);
-            memcpy(segment_offset + stack_top, &i, 4);
+            memcpy(stack_top, &i, 4);
             cmd_address += 4;
             stack_top += 4;
         }
         else if (cmd == CMD_FJ)
         {
-            temp_char = (char*) (segment_offset + stack_top - 1);
+            temp_char = (char*) (stack_top - 1);
             temp_int = (int*) (mua + cmd_address);
             if (temp_char[0]) cmd_address += 4;
             else cmd_address = *temp_int;
@@ -141,74 +141,74 @@ void run_mua()
         {
             temp_int = (int*) (mua + cmd_address);
             int jump = *temp_int;
-            temp_int = (int*) (segment_offset + stack_top);
+            temp_int = (int*) stack_top;
             temp_int[0] = cmd_address + 4;
             temp_int[1] = segment_offset - thread_stack;
             cmd_address = jump;
-            segment_offset = segment_offset + stack_top + 8;
-            stack_top = 0;
+            segment_offset = stack_top + 8;
+            stack_top = segment_offset;
             //printf("run %d %d %d\n", temp_int[0], temp_int[1], jump);
         }
         else if (cmd == CMD_PUSH_SEGMENT_FLOAT)
         {
             temp_int = (int*) (mua + cmd_address);
-            memcpy(segment_offset + stack_top, segment_offset + temp_int[0], 4);
+            memcpy(stack_top, segment_offset + temp_int[0], 4);
             cmd_address += 4;
             stack_top += 4;
         }
         else if (cmd == CMD_MUL_INT_INT)
         {
-            temp_int = (int*) (segment_offset + stack_top - 8);
+            temp_int = (int*) (stack_top - 8);
             temp_int[0] = temp_int[0] * temp_int[1];
             stack_top -= 4;
         }
         else if (cmd == CMD_ADD_INT_INT)
         {
-            temp_int = (int*) (segment_offset + stack_top - 8);
+            temp_int = (int*) (stack_top - 8);
             //printf("%d + %d = %d\n", temp_int[0], temp_int[1], temp_int[0] + temp_int[1]);
             temp_int[0] = temp_int[0] + temp_int[1];
             stack_top -= 4;
         }
         else if (cmd == CMD_MUL_INT_FLOAT)
         {
-            temp_int = (int*) (segment_offset + stack_top - 8);
-            temp_float = (float*) (segment_offset + stack_top - 8);
+            temp_int = (int*) (stack_top - 8);
+            temp_float = (float*) (stack_top - 8);
             temp_float[0] = temp_int[0] * temp_float[1];
             stack_top -= 4;
         }
         else if (cmd == CMD_ADD_INT_FLOAT)
         {
-            temp_int = (int*) (segment_offset + stack_top - 8);
-            temp_float = (float*) (segment_offset + stack_top - 8);
+            temp_int = (int*) (stack_top - 8);
+            temp_float = (float*) (stack_top - 8);
             temp_float[0] = temp_int[0] + temp_float[1];
             stack_top -= 4;
         }
         else if (cmd == CMD_LT_INT_FLOAT)
         {
-            temp_char = (char*) (segment_offset + stack_top - 8);
-            temp_int = (int*) (segment_offset + stack_top - 8);
-            temp_float = (float*) (segment_offset + stack_top - 8);
+            temp_char = (char*) (stack_top - 8);
+            temp_int = (int*) (stack_top - 8);
+            temp_float = (float*) (stack_top - 8);
             temp_char[0] = temp_int[0] < temp_float[1];
             stack_top -= 7;
         }
         else if (cmd == CMD_LT_INT_INT)
         {
-            temp_char = (char*) (segment_offset + stack_top - 8);
-            temp_int = (int*) (segment_offset + stack_top - 8);
+            temp_char = (char*) (stack_top - 8);
+            temp_int = (int*) (stack_top - 8);
             temp_char[0] = temp_int[0] < temp_int[1];
             //printf("%d < %d = %d\n", temp_int[0], temp_int[1], temp_char[0]);
             stack_top -= 7;
         }
         else if (cmd == CMD_SET_FLOAT_FLOAT)
         {
-            temp_int = (int*) (segment_offset + stack_top - 4);
-            temp_float = (float*) (segment_offset + stack_top - 8);
+            temp_int = (int*) (stack_top - 4);
+            temp_float = (float*) (stack_top - 8);
             ((float*) (segment_offset + *temp_int))[0] = temp_float[0];
             stack_top -= 8;
         }
         else if (cmd == CMD_SET_INT_INT)
         {
-            temp_int = (int*) (segment_offset + stack_top - 8);
+            temp_int = (int*) (stack_top - 8);
             int i = temp_int[0];
             int j = temp_int[1];
             //printf("set %d to %d\n", i, j);
@@ -217,41 +217,41 @@ void run_mua()
         }
         else if (cmd == CMD_PRINT_CHAR)
         {
-            printf("%d\n", *((char*) (segment_offset + stack_top - 1)));
+            printf("%d\n", *((char*) (stack_top - 1)));
             stack_top -= 1;
         }
         else if (cmd == CMD_PRINT_INT)
         {
-            printf("%d\n", *((int*) (segment_offset + stack_top - 4)));
+            printf("%d\n", *((int*) (stack_top - 4)));
             stack_top -= 4;
         }
         else if (cmd == CMD_PRINT_FLOAT)
         {
-            printf("%lf\n", *((float*) (segment_offset + stack_top - 4)));
+            printf("%lf\n", *((float*) (stack_top - 4)));
             stack_top -= 4;
         }
         else if (cmd == CMD_RETURN_INT)
         {
-            temp_int = (int*) (segment_offset + stack_top - 4);
+            temp_int = (int*) (stack_top - 4);
             int i = *temp_int;
             temp_int = (int*) (segment_offset - 8);
             cmd_address = temp_int[0];
-            stack_top = segment_offset - thread_stack - temp_int[1] - 8;
+            stack_top = segment_offset - 8;
             segment_offset = thread_stack + temp_int[1];
-            memcpy(segment_offset + stack_top, &i, 4);
+            memcpy(stack_top, &i, 4);
             stack_top += 4;
             //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
             if (segment_offset == thread_stack) break;
         }
         else if (cmd == CMD_RETURN_FLOAT)
         {
-            temp_float = (float*) (segment_offset + stack_top - 4);
+            temp_float = (float*) (stack_top - 4);
             float f = *temp_float;
             temp_int = (int*) (segment_offset - 8);
             cmd_address = temp_int[0];
-            stack_top = segment_offset - thread_stack - temp_int[1] - 8;
+            stack_top = segment_offset - 8;
             segment_offset = thread_stack + temp_int[1];
-            memcpy(segment_offset + stack_top, &f, 4);
+            memcpy(stack_top, &f, 4);
             stack_top += 4;
             //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
             if (segment_offset == thread_stack) break;
