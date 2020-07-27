@@ -16,7 +16,7 @@ def run_func(name):
     pass
 
 
-def add_func(name):
+def add_func(name, r_type):
     pass
 
 
@@ -121,7 +121,7 @@ _fj_end()
 _fj_end()
 
 # $FuncDefHead -> int var_id ( )
-add_func(pd[1].lexeme)
+add_func(pd[1].lexeme, DATA_TYPE_INT)
 
 # $FuncDef -> $FuncDefHead { $StatementList }
 code(CMD_RETURN)

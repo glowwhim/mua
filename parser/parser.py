@@ -433,16 +433,24 @@ class Parser(object):
 		self.grammar = g
 
 	def parse(self, non_terminal, token_generator, output_path):
-		# type: (str, List[lexer.Token], str) -> object
+		# type: (str, List[lexer.Token], str) -> None
 		import codeparser
 		code_parser = codeparser.CodeParser()
 		lr_automata = LRAutomata(self.grammar, non_terminal)
 		table = lr_automata.create_table()
+		token_list = [i for i in token_generator]
+		self._parse(table, token_list, code_parser)
+		self._parse(table, token_list, code_parser)
+		code_parser.print_code()
+		code_parser.output_code(output_path)
+
+	def _parse(self, lr_table, token_list, code_parser):
+		code_parser.do_semantics_start()
 		cursor = 0
 		state_stack = [0]
 		token_stack = [SYMBOL_END]
-		for token in token_generator:
-			action, value = table.get_action(state_stack[-1], token.get_symbol())
+		for token in token_list:
+			action, value = lr_table.get_action(state_stack[-1], token.get_symbol())
 			while action == ACTION_R:
 				p = self.grammar.get_context().get_production(value)
 				prod_list = []
@@ -450,18 +458,15 @@ class Parser(object):
 					prod_list.insert(0, token_stack.pop())
 					state_stack.pop()
 				token_stack.append(lexer.Token(p.get_name()))
-				state_stack.append(table.get_goto(state_stack[-1], token_stack[-1].get_symbol()))
-				action, value = table.get_action(state_stack[-1], token.get_symbol())
+				state_stack.append(lr_table.get_goto(state_stack[-1], token_stack[-1].get_symbol()))
+				action, value = lr_table.get_action(state_stack[-1], token.get_symbol())
 				code_parser.do_semantics(p, token_stack[-1], prod_list)
 			if action == ACTION_S:
 				token_stack.append(token)
 				state_stack.append(value)
 				cursor += 1
 			elif action == ACTION_ACC:
-				code_parser.do_semantics_finish()
 				print "==============================lr parse acc=============================="
 			else:
 				print "error"
 				return
-		code_parser.print_code()
-		code_parser.output_code(output_path)

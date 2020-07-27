@@ -13,13 +13,13 @@ def _copy_prop(dst, src):
 
 class VariableTable(object):
 
-	next_address = 0
 	parent = None  # type: VariableTable
-	variable = {}
 
 	def __init__(self, parent):
 		# type: (VariableTable) -> None
 		self.parent = parent
+		self.variable = {}
+		self.next_address = 0
 
 	def add_var(self, name, data_type):
 		if name in self.variable:
@@ -37,7 +37,7 @@ class CodeParser(object):
 		self.variable_table = VariableTable(None)
 		self.code_list = []
 		self.code_address = 0
-		self.func_address = {}
+		self.def_func = {}
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
 		self._env = {
@@ -55,11 +55,20 @@ class CodeParser(object):
 		for _s in dir(defines):
 			self._env[_s] = getattr(defines, _s)
 
-	def _add_func(self, name):
-		self.func_address[name] = self.code_address
+	def _add_func(self, name, r_type):
+		self.def_func[name] = self.code_address, r_type
 
 	def _run_func(self, name):
-		self._code(CMD_RUN, name)
+		if name in self.def_func:
+			self._code(CMD_RUN, self.def_func[name][0])
+		else:
+			self._code(CMD_RUN, 0)
+
+	def _get_func_return_type(self, name):
+		if name in self.def_func:
+			return self.def_func[name][1]
+		else:
+			return DATA_TYPE_INT
 
 	def _code(self, cmd, *args):
 		self.code_address += CMD_SIZE[cmd]
@@ -79,13 +88,15 @@ class CodeParser(object):
 	def _get_code_address(self):
 		return self.code_address
 
-	def _redirect_func_address(self):
-		for c in self.code_list:
-			if c[0] == CMD_RUN:
-				c[1] = self.func_address[c[1]]
-
-	def do_semantics_finish(self):
-		self._redirect_func_address()
+	def do_semantics_start(self):
+		self.variable_table = VariableTable(None)
+		self.code_list = []
+		self.code_address = 0
+		self.loop_begin_stack = []
+		self.loop_fj_stack = []
+		print self.variable_table.variable
+		self._env["add_var"] = self.variable_table.add_var
+		self._env["get_var"] = self.variable_table.get_var
 
 	def do_semantics(self, production, rd, pd):
 		# type: (Production, Token, List[Token]) -> None
@@ -96,7 +107,7 @@ class CodeParser(object):
 
 	def output_code(self, path):
 		f = open(path, "w")
-		lines = [str(self.code_address), str(self.func_address["main"])]
+		lines = [str(self.code_address), str(self.def_func["main"][0])]
 		for c in self.code_list:
 			cmd = c[0]
 			lines.append("%s %s" % (cmd, " ".join([str(s) for s in c[1:]])))
