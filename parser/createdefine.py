@@ -131,6 +131,7 @@ def gen_operator_defines():
 	data_type_2_cmd = {}
 	cmd_name_define = {}
 	operator1 = []
+	operator2 = []
 	for attr in dir(origindefines):
 		if attr.startswith("OPERATOR_"):
 			lines.append("")
@@ -140,6 +141,8 @@ def gen_operator_defines():
 			symbol = "SYMBOL_%s" % define_name
 			if len(op) == 1:
 				operator1.append(symbol)
+			if len(op) == 2:
+				operator2.append(symbol)
 			lines.append("%s = '%s'" % (symbol, op))
 			for l_data, r_data, rtype in op_list:
 				cmd = "CMD_%s_%s_%s" % (define_name, l_data[0].upper(), r_data[0].upper())
@@ -153,6 +156,10 @@ def gen_operator_defines():
 	lines.append("}")
 	lines.append("OPERATOR1 = [")
 	for op in operator1:
+		lines.append("\t%s, " % op)
+	lines.append("]")
+	lines.append("OPERATOR2 = [")
+	for op in operator2:
 		lines.append("\t%s, " % op)
 	lines.append("]")
 

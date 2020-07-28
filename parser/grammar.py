@@ -94,12 +94,14 @@ code(DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD[var_type], var_address)
 # $Expr4 -> $Expr3
 # $Expr5 -> $Expr4
 # $Expr6 -> $Expr5
-# $Expr14 -> $Expr6
+# $Expr7 -> $Expr6
+# $Expr14 -> $Expr7
 rd.type = fpd.type
 
 # $Expr3 -> $Expr3 * $Expr0
 # $Expr4 -> $Expr4 + $Expr3
 # $Expr6 -> $Expr6 < $Expr5
+# $Expr7 -> $Expr7 == $Expr6
 cmd = OPERATOR_CMD[(pd[1].lexeme, pd[0].type, pd[2].type)]
 rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)

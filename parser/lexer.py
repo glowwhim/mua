@@ -118,6 +118,11 @@ def token_generator(code):
 			# tab
 			left += 1
 			right = left
+		elif code[right:right + 2] in OPERATOR2:
+			# operator2
+			yield Token(code[right:right + 2]).set_prop(TOKEN_PROP_LEXEME, code[right:right + 2])
+			left += 2
+			right = left
 		elif code[right] in OPERATOR1:
 			# operator1
 			yield Token(code[right]).set_prop(TOKEN_PROP_LEXEME, code[right])

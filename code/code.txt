@@ -9,11 +9,12 @@ int test()
         a = a + b;
         b = b + 1;
     }
-    print a;
+    return a;
 }
 
 int main()
 {
-    test();
+    print test();
+    print 5050 == test();
     return 0;
 }
