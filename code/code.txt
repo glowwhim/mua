@@ -1,20 +1,7 @@
-int test()
-{
-    int a;
-    int b;
-    a = 0;
-    b = 1;
-    while (b < 101)
-    {
-        a = a + b;
-        b = b + 1;
-    }
-    return a;
-}
+
 
 int main()
 {
-    print test();
-    print 5050 == test();
+    print 1 == 2;
     return 0;
 }
