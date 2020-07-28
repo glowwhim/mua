@@ -1,10 +1,28 @@
-int test()
+void test()
 {
-    return 998;
+
+    print 998;
+    return;
 }
+
+int test1()
+{
+    int a;
+    int b;
+    a = 0;
+    b = 1;
+    while (b < 101)
+    {
+        a = a + b;
+        b = b + 1;
+    }
+    print a;
+}
+
+
 
 
 int main()
 {
-    print 1 + test();
+    test1();
 }

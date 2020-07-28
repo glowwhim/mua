@@ -59,6 +59,9 @@ pd = [FakeObj(), ]
 
 
 # ==============================grammar are follows==============================
+# $Return -> return ;
+code(DATA_TYPE_2_RETURN_CMD[DATA_TYPE_VOID])
+
 # $Return -> return $Expr14 ;
 code(DATA_TYPE_2_RETURN_CMD[pd[1].type])
 
@@ -128,14 +131,19 @@ _fj_end()
 # $While -> $WhileCondition { $StatementList }
 _fj_end()
 
-# $FuncDefHead -> int var_id ( )
+# $VoidFuncDefHead -> void var_id ( )
+add_func(pd[1].lexeme, DATA_TYPE_VOID)
+
+# $IntFuncDefHead -> int var_id ( )
 add_func(pd[1].lexeme, DATA_TYPE_INT)
 
-# $FuncDefHead -> float var_id ( )
+# $FloatFuncDefHead -> float var_id ( )
 add_func(pd[1].lexeme, DATA_TYPE_FLOAT)
 
-# $FuncDef -> $FuncDefHead { $StatementList }
-code(CMD_RETURN_INT)
+# $FuncDef -> $VoidFuncDefHead { $StatementList }
+# $FuncDef -> $IntFuncDefHead { $StatementList }
+# $FuncDef -> $FloatFuncDefHead { $StatementList }
+code(CMD_RETURN_VOID)
 
 # $Program -> $FuncDefList
 # $FuncDefList -> $FuncDef

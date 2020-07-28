@@ -63,6 +63,7 @@ void gen_mua()
             || cmd == CMD_PRINT_CHAR
             || cmd == CMD_PRINT_INT
             || cmd == CMD_LT_INT_FLOAT
+            || cmd == CMD_RETURN_VOID
             || cmd == CMD_RETURN_INT
             || cmd == CMD_RETURN_FLOAT
             || cmd == CMD_LT_INT_INT
@@ -229,6 +230,17 @@ void run_mua()
         {
             printf("%lf\n", *((float*) (stack_top - 4)));
             stack_top -= 4;
+        }
+        else if (cmd == CMD_RETURN_VOID)
+        {
+            temp_int = (int*) (stack_top - 4);
+            int i = *temp_int;
+            temp_int = (int*) (segment_offset - 8);
+            cmd_address = temp_int[0];
+            stack_top = segment_offset - 8;
+            segment_offset = thread_stack + temp_int[1];
+            //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
+            if (segment_offset == thread_stack) break;
         }
         else if (cmd == CMD_RETURN_INT)
         {

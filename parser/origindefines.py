@@ -6,6 +6,7 @@ TOKEN_PROP_DATE_TYPE = "type"
 TOKEN_PROP_LEXEME = "lexeme"
 
 
+DATA_TYPE_VOID = "void", "void_value", 0
 DATA_TYPE_CHAR = "char", "char_value", 1
 DATA_TYPE_INT = "int", "int_value", 4
 DATA_TYPE_FLOAT = "float", "float_value", 4
