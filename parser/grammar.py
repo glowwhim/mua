@@ -68,17 +68,9 @@ code(DATA_TYPE_2_RETURN_CMD[pd[1].type])
 # $Print -> print $Expr14 ;
 code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
 
-# $CharDef -> char var_id ;
-add_var(pd[1].lexeme, DATA_TYPE_CHAR)
-code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_CHAR], 0)
-
-# $IntDef -> int var_id ;
-add_var(pd[1].lexeme, DATA_TYPE_INT)
-code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_INT], 0)
-
-# $FloatDef -> float var_id ;
-add_var(pd[1].lexeme, DATA_TYPE_FLOAT)
-code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_FLOAT], 0)
+# $DataDef -> data_type var_id ;
+add_var(pd[1].lexeme, fpd.type)
+code(DATA_TYPE_2_PUSH_DATA_CMD[fpd.type], 0)
 
 # $MethodExpr -> var_id ( )
 run_func(fpd.lexeme)
@@ -131,18 +123,10 @@ _fj_end()
 # $While -> $WhileCondition { $StatementList }
 _fj_end()
 
-# $VoidFuncDefHead -> void var_id ( )
-add_func(pd[1].lexeme, DATA_TYPE_VOID)
+# $FuncDefHead -> data_type var_id ( )
+add_func(pd[1].lexeme, fpd.type)
 
-# $IntFuncDefHead -> int var_id ( )
-add_func(pd[1].lexeme, DATA_TYPE_INT)
-
-# $FloatFuncDefHead -> float var_id ( )
-add_func(pd[1].lexeme, DATA_TYPE_FLOAT)
-
-# $FuncDef -> $VoidFuncDefHead { $StatementList }
-# $FuncDef -> $IntFuncDefHead { $StatementList }
-# $FuncDef -> $FloatFuncDefHead { $StatementList }
+# $FuncDef -> $FuncDefHead { $StatementList }
 code(CMD_RETURN_VOID)
 
 # $Program -> $FuncDefList
@@ -151,9 +135,7 @@ code(CMD_RETURN_VOID)
 # $Statement -> $Expr14 ;
 # $Statement -> $Print
 # $Statement -> $Return
-# $Statement -> $CharDef
-# $Statement -> $IntDef
-# $Statement -> $FloatDef
+# $Statement -> $DataDef
 # $Statement -> $While
 # $StatementList -> $Statement
 # $StatementList -> $StatementList $Statement

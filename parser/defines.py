@@ -6,6 +6,7 @@ TOKEN_PROP_LEXEME = 'lexeme'
 TOKEN_PROP_VALUE = 'value'
 
 
+SYMBOL_DATA_TYPE = 'data_type'
 SYMBOL_END = '#'
 SYMBOL_LBRACKET = '{'
 SYMBOL_LPRENE = '('

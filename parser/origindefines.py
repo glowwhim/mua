@@ -14,6 +14,7 @@ DATA_TYPE_FLOAT = "float", "float_value", 4
 
 SYMBOL_START = "$START"
 SYMBOL_END = "#"
+SYMBOL_DATA_TYPE = "data_type"
 SYMBOL_VAR_ID = "var_id"
 SYMBOL_WHILE = "while"
 SYMBOL_SEMICOLON = ";"

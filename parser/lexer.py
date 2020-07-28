@@ -2,7 +2,7 @@
 from defines import *
 
 
-KEYWORD = [DATA_TYPE_SYMBOL[d] for d in ALL_DATA_TYPE] + [
+KEYWORD = [
 	SYMBOL_WHILE,
 	SYMBOL_PRINT,
 	SYMBOL_RETURN,
@@ -51,6 +51,18 @@ class Token(object):
 		for s in self.get_all_prop_name():
 			prop[s] = getattr(self, s)
 		print prop
+
+
+def _try_parse_data_type_keyword(code, left):
+	for data_type, keyword in DATA_TYPE_SYMBOL.iteritems():
+		i = left
+		for char in keyword:
+			if char != code[i]:
+				break
+			i += 1
+		else:
+			return i, data_type
+	return -1, 0
 
 
 def _try_parse_keyword(code, left):
@@ -118,16 +130,21 @@ def token_generator(code):
 			right = left
 		else:
 			# keyword
-			right = _try_parse_keyword(code, left)
+			right, data_type = _try_parse_data_type_keyword(code, left)
 			if right != -1:
-				yield Token(code[left:right])
+				yield Token(SYMBOL_DATA_TYPE).set_prop(TOKEN_PROP_DATE_TYPE, data_type)
 				left = right
 			else:
-				# id
-				right = _try_parse_id(code, left)
+				right = _try_parse_keyword(code, left)
 				if right != -1:
-					yield Token(SYMBOL_VAR_ID).set_prop(TOKEN_PROP_LEXEME, code[left:right])
+					yield Token(code[left:right])
 					left = right
 				else:
-					raise Exception("unexpected char %s" % code[right])
+					# id
+					right = _try_parse_id(code, left)
+					if right != -1:
+						yield Token(SYMBOL_VAR_ID).set_prop(TOKEN_PROP_LEXEME, code[left:right])
+						left = right
+					else:
+						raise Exception("unexpected char %s" % code[right])
 	yield Token(SYMBOL_END)

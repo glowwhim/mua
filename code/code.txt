@@ -1,11 +1,4 @@
-void test()
-{
-
-    print 998;
-    return;
-}
-
-int test1()
+int test()
 {
     int a;
     int b;
@@ -19,10 +12,8 @@ int test1()
     print a;
 }
 
-
-
-
 int main()
 {
-    test1();
+    test();
+    return 0;
 }
