@@ -155,16 +155,18 @@ def gen_operator_defines():
 				operator2.append(symbol)
 			lines.append("%s = '%s'" % (symbol, op))
 			for l_data, r_data, rtype in op_list:
+				l_id = get_data_type_id(l_data)
+				r_id = get_data_type_id(r_data)
 				if l_data is None:
-					cmd = "CMD_%s_%s" % (define_name, r_data[0].upper())
+					cmd = "CMD_%s_%s" % (define_name, all_data_type[r_id]["short_name"])
 					cmd_name_define[len(cmd_size)] = cmd
 					data_type_2_cmd[(symbol, None, get_data_type_id(r_data))] = cmd
-					add_cmd(cmd, 0, rtype)
+					add_cmd(cmd, 0, get_data_type_id(rtype))
 				else:
-					cmd = "CMD_%s_%s_%s" % (define_name, l_data[0].upper(), r_data[0].upper())
+					cmd = "CMD_%s_%s_%s" % (define_name, all_data_type[l_id]["short_name"], all_data_type[r_id]["short_name"])
 					cmd_name_define[len(cmd_size)] = cmd
 					data_type_2_cmd[(symbol, get_data_type_id(l_data), get_data_type_id(r_data))] = cmd
-					add_cmd(cmd, 0, rtype)
+					add_cmd(cmd, 0, get_data_type_id(rtype))
 	lines.append("OPERATOR_CMD = {")
 	for k, v in data_type_2_cmd.items():
 		if k[1] is None:
@@ -198,8 +200,8 @@ def gen_cmd_return_data_type_defines():
 	lines.append("")
 	lines.append("")
 	lines.append("CMD_RETURN_DATA_TYPE = {")
-	for k, v in cmd_return_data_type.items():
-		lines.append("\t%s: DATA_TYPE_%s, " % (k, v[0].upper()))
+	for cmd, _id in cmd_return_data_type.items():
+		lines.append("\t%s: %s, " % (cmd, all_data_type[_id]["name"]))
 	lines.append("}")
 
 
