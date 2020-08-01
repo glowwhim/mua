@@ -5,11 +5,16 @@ import origindefines
 
 
 lines = []
-data_type_id = {}
+all_data_type = {}
 data_type_list = []
-data_type_define_name = {}
 cmd_size = {}
 cmd_return_data_type = {}
+
+
+def get_data_type_id(origin_data_type):
+	for _id, info in all_data_type.iteritems():
+		if origin_data_type == (info["keyword"], info["value_keyword"], info["size"]):
+			return _id
 
 
 def add_cmd(cmd, args_size, rtype=None):
@@ -23,15 +28,18 @@ def add_cmd(cmd, args_size, rtype=None):
 
 def init_data_type_list():
 	global data_type_list
-	global data_type_id
-	global data_type_define_name
 	_id = 0
 	for attr in dir(origindefines):
 		if attr.startswith("DATA_TYPE_"):
 			info = getattr(origindefines, attr)
 			data_type_list.append(info)
-			data_type_define_name[_id] = attr
-			data_type_id[info] = _id
+			all_data_type[_id] = {
+				"name": attr,
+				"short_name": attr[10:],
+				"keyword": info[0],
+				"value_keyword": info[1],
+				"size": info[2],
+			}
 			_id += 1
 
 
@@ -60,9 +68,8 @@ def gen_data_type_defines():
 	global lines
 	lines.append("")
 	lines.append("")
-	for data_type in data_type_list:
-		data_type_name = "DATA_TYPE_%s" % data_type[0].upper()
-		lines.append("%s = %s" % (data_type_name, data_type_id[data_type]))
+	for _id, info in all_data_type.iteritems():
+		lines.append("%s = %s" % (info["name"], _id))
 	lines.append("DATA_TYPE_SYMBOL = {")
 	for data_type in data_type_list:
 		lines.append("\tDATA_TYPE_%s: '%s', " % (data_type[0].upper(), data_type[0]))
@@ -154,19 +161,19 @@ def gen_operator_defines():
 				if l_data is None:
 					cmd = "CMD_%s_%s" % (define_name, r_data[0].upper())
 					cmd_name_define[len(cmd_size)] = cmd
-					data_type_2_cmd[(symbol, None, data_type_id[r_data])] = cmd
+					data_type_2_cmd[(symbol, None, get_data_type_id(r_data))] = cmd
 					add_cmd(cmd, 0, rtype)
 				else:
 					cmd = "CMD_%s_%s_%s" % (define_name, l_data[0].upper(), r_data[0].upper())
 					cmd_name_define[len(cmd_size)] = cmd
-					data_type_2_cmd[(symbol, data_type_id[l_data], data_type_id[r_data])] = cmd
+					data_type_2_cmd[(symbol, get_data_type_id(l_data), get_data_type_id(r_data))] = cmd
 					add_cmd(cmd, 0, rtype)
 	lines.append("OPERATOR_CMD = {")
 	for k, v in data_type_2_cmd.iteritems():
 		if k[1] is None:
-			key = "(%s, None, %s)" % (k[0], data_type_define_name[k[2]])
+			key = "(%s, None, %s)" % (k[0], all_data_type[k[2]]["name"])
 		else:
-			key = "(%s, %s, %s)" % (k[0], data_type_define_name[k[1]], data_type_define_name[k[2]])
+			key = "(%s, %s, %s)" % (k[0], all_data_type[k[1]]["name"], all_data_type[k[2]]["name"])
 		lines.append("\t%s: %s, " % (key, str(v)))
 	lines.append("}")
 	lines.append("OPERATOR1 = [")
