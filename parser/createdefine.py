@@ -6,7 +6,6 @@ import origindefines
 
 lines = []
 all_data_type = {}
-data_type_list = []
 cmd_size = {}
 cmd_return_data_type = {}
 
@@ -27,12 +26,10 @@ def add_cmd(cmd, args_size, rtype=None):
 
 
 def init_data_type_list():
-	global data_type_list
 	_id = 0
 	for attr in dir(origindefines):
 		if attr.startswith("DATA_TYPE_"):
 			info = getattr(origindefines, attr)
-			data_type_list.append(info)
 			all_data_type[_id] = {
 				"name": attr,
 				"short_name": attr[10:],
@@ -71,20 +68,20 @@ def gen_data_type_defines():
 	for _id, info in all_data_type.iteritems():
 		lines.append("%s = %s" % (info["name"], _id))
 	lines.append("DATA_TYPE_SYMBOL = {")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s: '%s', " % (data_type[0].upper(), data_type[0]))
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s: '%s', " % (data_type["name"], data_type["keyword"]))
 	lines.append("}")
 	lines.append("DATA_TYPE_VALUE_SYMBOL = {")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s: '%s', " % (data_type[0].upper(), data_type[1]))
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s: '%s', " % (data_type["name"], data_type["value_keyword"]))
 	lines.append("}")
 	lines.append("DATA_TYPE_SIZE = {")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s: %s, " % (data_type[0].upper(), data_type[2]))
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s: %s, " % (data_type["name"], data_type["size"]))
 	lines.append("}")
 	lines.append("ALL_DATA_TYPE = [")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s, " % data_type[0].upper())
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s, " % data_type["name"])
 	lines.append("]")
 
 
@@ -93,11 +90,11 @@ def gen_print_define():
 	lines.append("")
 	lines.append("")
 	lines.append("SYMBOL_PRINT = 'print'")
-	for data_type in data_type_list:
-		add_cmd("CMD_PRINT_%s" % data_type[0].upper(), 0)
+	for data_type in all_data_type.itervalues():
+		add_cmd("CMD_PRINT_%s" % data_type["short_name"], 0)
 	lines.append("DATA_TYPE_2_PRINT_CMD = {")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s: %s, " % (data_type[0].upper(), "CMD_PRINT_%s" % data_type[0].upper()))
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s: %s, " % (data_type["name"], "CMD_PRINT_%s" % data_type["short_name"]))
 	lines.append("}")
 
 
@@ -106,11 +103,11 @@ def gen_return_define():
 	lines.append("")
 	lines.append("")
 	lines.append("SYMBOL_RETURN = 'return'")
-	for data_type in data_type_list:
-		add_cmd("CMD_RETURN_%s" % data_type[0].upper(), 0)
+	for data_type in all_data_type.itervalues():
+		add_cmd("CMD_RETURN_%s" % data_type["short_name"], 0)
 	lines.append("DATA_TYPE_2_RETURN_CMD = {")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s: %s, " % (data_type[0].upper(), "CMD_RETURN_%s" % data_type[0].upper()))
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s: %s, " % (data_type["name"], "CMD_RETURN_%s" % data_type["short_name"]))
 	lines.append("}")
 
 
@@ -118,11 +115,11 @@ def gen_push_data_cmd():
 	global lines
 	lines.append("")
 	lines.append("")
-	for data_type in data_type_list:
-		add_cmd("CMD_PUSH_%s" % data_type[0].upper(), data_type[2])
+	for data_type in all_data_type.itervalues():
+		add_cmd("CMD_PUSH_%s" % data_type["short_name"], data_type["size"])
 	lines.append("DATA_TYPE_2_PUSH_DATA_CMD = {")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s: %s, " % (data_type[0].upper(), "CMD_PUSH_%s" % data_type[0].upper()))
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s: %s, " % (data_type["name"], "CMD_PUSH_%s" % data_type["short_name"]))
 	lines.append("}")
 
 
@@ -130,11 +127,11 @@ def gen_push_segment_data_cmd():
 	global lines
 	lines.append("")
 	lines.append("")
-	for data_type in data_type_list:
-		add_cmd("CMD_PUSH_SEGMENT_%s" % data_type[0].upper(), 4)
+	for data_type in all_data_type.itervalues():
+		add_cmd("CMD_PUSH_SEGMENT_%s" % data_type["short_name"], 4)
 	lines.append("DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD = {")
-	for data_type in data_type_list:
-		lines.append("\tDATA_TYPE_%s: %s, " % (data_type[0].upper(), "CMD_PUSH_SEGMENT_%s" % data_type[0].upper()))
+	for data_type in all_data_type.itervalues():
+		lines.append("\t%s: %s, " % (data_type["name"], "CMD_PUSH_SEGMENT_%s" % data_type["short_name"]))
 	lines.append("}")
 
 
