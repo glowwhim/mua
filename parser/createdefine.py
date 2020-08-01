@@ -11,7 +11,7 @@ cmd_return_data_type = {}
 
 
 def get_data_type_id(origin_data_type):
-	for _id, info in all_data_type.iteritems():
+	for _id, info in all_data_type.items():
 		if origin_data_type == (info["keyword"], info["value_keyword"], info["size"]):
 			return _id
 
@@ -65,22 +65,22 @@ def gen_data_type_defines():
 	global lines
 	lines.append("")
 	lines.append("")
-	for _id, info in all_data_type.iteritems():
+	for _id, info in all_data_type.items():
 		lines.append("%s = %s" % (info["name"], _id))
 	lines.append("DATA_TYPE_SYMBOL = {")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s: '%s', " % (data_type["name"], data_type["keyword"]))
 	lines.append("}")
 	lines.append("DATA_TYPE_VALUE_SYMBOL = {")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s: '%s', " % (data_type["name"], data_type["value_keyword"]))
 	lines.append("}")
 	lines.append("DATA_TYPE_SIZE = {")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s: %s, " % (data_type["name"], data_type["size"]))
 	lines.append("}")
 	lines.append("ALL_DATA_TYPE = [")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s, " % data_type["name"])
 	lines.append("]")
 
@@ -90,10 +90,10 @@ def gen_print_define():
 	lines.append("")
 	lines.append("")
 	lines.append("SYMBOL_PRINT = 'print'")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		add_cmd("CMD_PRINT_%s" % data_type["short_name"], 0)
 	lines.append("DATA_TYPE_2_PRINT_CMD = {")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s: %s, " % (data_type["name"], "CMD_PRINT_%s" % data_type["short_name"]))
 	lines.append("}")
 
@@ -103,10 +103,10 @@ def gen_return_define():
 	lines.append("")
 	lines.append("")
 	lines.append("SYMBOL_RETURN = 'return'")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		add_cmd("CMD_RETURN_%s" % data_type["short_name"], 0)
 	lines.append("DATA_TYPE_2_RETURN_CMD = {")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s: %s, " % (data_type["name"], "CMD_RETURN_%s" % data_type["short_name"]))
 	lines.append("}")
 
@@ -115,10 +115,10 @@ def gen_push_data_cmd():
 	global lines
 	lines.append("")
 	lines.append("")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		add_cmd("CMD_PUSH_%s" % data_type["short_name"], data_type["size"])
 	lines.append("DATA_TYPE_2_PUSH_DATA_CMD = {")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s: %s, " % (data_type["name"], "CMD_PUSH_%s" % data_type["short_name"]))
 	lines.append("}")
 
@@ -127,10 +127,10 @@ def gen_push_segment_data_cmd():
 	global lines
 	lines.append("")
 	lines.append("")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		add_cmd("CMD_PUSH_SEGMENT_%s" % data_type["short_name"], 4)
 	lines.append("DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD = {")
-	for data_type in all_data_type.itervalues():
+	for data_type in all_data_type.values():
 		lines.append("\t%s: %s, " % (data_type["name"], "CMD_PUSH_SEGMENT_%s" % data_type["short_name"]))
 	lines.append("}")
 
@@ -166,7 +166,7 @@ def gen_operator_defines():
 					data_type_2_cmd[(symbol, get_data_type_id(l_data), get_data_type_id(r_data))] = cmd
 					add_cmd(cmd, 0, rtype)
 	lines.append("OPERATOR_CMD = {")
-	for k, v in data_type_2_cmd.iteritems():
+	for k, v in data_type_2_cmd.items():
 		if k[1] is None:
 			key = "(%s, None, %s)" % (k[0], all_data_type[k[2]]["name"])
 		else:
@@ -188,7 +188,7 @@ def gen_cmd_size_defines():
 	lines.append("")
 	lines.append("")
 	lines.append("CMD_SIZE = {")
-	for k, v in cmd_size.iteritems():
+	for k, v in cmd_size.items():
 		lines.append("\t%s: %s, " % (k, v))
 	lines.append("}")
 
@@ -198,7 +198,7 @@ def gen_cmd_return_data_type_defines():
 	lines.append("")
 	lines.append("")
 	lines.append("CMD_RETURN_DATA_TYPE = {")
-	for k, v in cmd_return_data_type.iteritems():
+	for k, v in cmd_return_data_type.items():
 		lines.append("\t%s: DATA_TYPE_%s, " % (k, v[0].upper()))
 	lines.append("}")
 
