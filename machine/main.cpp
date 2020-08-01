@@ -42,6 +42,7 @@ void gen_mua()
         if (cmd == CMD_PUSH_INT 
             || cmd == CMD_PUSH_SEGMENT_INT 
             || cmd == CMD_PUSH_SEGMENT_CHAR 
+            || cmd == CMD_PUSH_ADDRESS 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
             || cmd == CMD_RUN
@@ -63,6 +64,7 @@ void gen_mua()
         }
         else if (cmd == CMD_MUL_INT_INT 
             || cmd == CMD_ADD_INT_INT 
+            || cmd == CMD_ADD_ADDRESS_INT
             || cmd == CMD_MUL_INT_FLOAT 
             || cmd == CMD_SET_FLOAT_FLOAT
             || cmd == CMD_SET_INT_INT
@@ -72,11 +74,13 @@ void gen_mua()
             || cmd == CMD_PRINT_INT
             || cmd == CMD_LT_INT_FLOAT
             || cmd == CMD_EQ_INT_INT
+            || cmd == CMD_EQ_ADDRESS_ADDRESS
             || cmd == CMD_EQ_CHAR_INT
             || cmd == CMD_NOT_CHAR
             || cmd == CMD_RETURN_VOID
             || cmd == CMD_RETURN_INT
             || cmd == CMD_RETURN_FLOAT
+            || cmd == CMD_PRINT_ADDRESS
             || cmd == CMD_LT_INT_INT
             || cmd == CMD_PRINT_FLOAT)
         {
@@ -120,7 +124,7 @@ void run_mua()
     {
         cmd = mua[cmd_address++];
         //printf("%d: %d\n", cmd_address-1, cmd);
-        if (cmd == CMD_PUSH_INT || cmd == CMD_PUSH_FLOAT)
+        if (cmd == CMD_PUSH_INT || cmd == CMD_PUSH_FLOAT || cmd == CMD_PUSH_ADDRESS)
         {
             memcpy(stack_top, mua + cmd_address, 4);
             cmd_address += 4;
@@ -196,7 +200,7 @@ void run_mua()
             char c = !temp_char[0];
             temp_char[0] = c;
         }
-        else if (cmd == CMD_EQ_INT_INT)
+        else if (cmd == CMD_EQ_INT_INT || cmd == CMD_EQ_ADDRESS_ADDRESS)
         {
             temp_int = (int*) (stack_top - 8);
             temp_char = (char*) temp_int;
@@ -210,7 +214,7 @@ void run_mua()
             temp_char[0] = temp_char[0] == temp_int[0];
             stack_top -= 4;
         }
-        else if (cmd == CMD_ADD_INT_INT)
+        else if (cmd == CMD_ADD_INT_INT || cmd == CMD_ADD_ADDRESS_INT)
         {
             temp_int = (int*) (stack_top - 8);
             //printf("%d + %d = %d\n", temp_int[0], temp_int[1], temp_int[0] + temp_int[1]);
@@ -281,6 +285,12 @@ void run_mua()
         else if (cmd == CMD_PRINT_INT)
         {
             printf("%d\n", *((int*) (stack_top - 4)));
+            stack_top -= 4;
+        }
+        else if (cmd == CMD_PRINT_ADDRESS)
+        {
+            int offset = *((int*) (stack_top - 4));
+            printf("%p\n", segment_offset + offset);
             stack_top -= 4;
         }
         else if (cmd == CMD_PRINT_FLOAT)

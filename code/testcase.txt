@@ -25,7 +25,7 @@ int test003()
     int i;
     char c;
     int j;
-    print &j == 5;
+    print &j == &i + 5;
     return 0;
 }
 

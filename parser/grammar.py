@@ -108,9 +108,9 @@ code(cmd)
 
 # $Expr2 -> & var_id
 var_address, token = get_var(pd[1].lexeme)
-rd.type = DATA_TYPE_INT
+rd.type = DATA_TYPE_ADDRESS
 rd.address_type = token.type
-code(CMD_PUSH_INT, var_address)
+code(CMD_PUSH_ADDRESS, var_address)
 
 # $Expr3 -> $Expr3 * $Expr2
 # $Expr4 -> $Expr4 + $Expr3
