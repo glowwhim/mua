@@ -7,6 +7,7 @@ class FakeObj(object):
     value = None
     type = None
     lexeme = ""
+    address_type = None
 
     def print_prop(self):
         pass
@@ -104,6 +105,12 @@ rd.type = fpd.type
 cmd = OPERATOR_CMD[(pd[0].lexeme, None, pd[1].type)]
 rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
+
+# $Expr2 -> & var_id
+var_address, token = get_var(pd[1].lexeme)
+rd.type = DATA_TYPE_INT
+rd.address_type = token.type
+code(CMD_PUSH_INT, var_address)
 
 # $Expr3 -> $Expr3 * $Expr2
 # $Expr4 -> $Expr4 + $Expr3

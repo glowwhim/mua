@@ -12,7 +12,26 @@ int test001()
     print a == 5050;
 }
 
+int test002()
+{
+    char c;
+    c = 1 == 2;
+    print !c == 1;
+    return 0;
+}
+
+int test003()
+{
+    int i;
+    char c;
+    int j;
+    print &j == 5;
+    return 0;
+}
+
 void main()
 {
     test001();
+    test002();
+    test003();
 }

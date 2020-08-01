@@ -72,6 +72,7 @@ void gen_mua()
             || cmd == CMD_PRINT_INT
             || cmd == CMD_LT_INT_FLOAT
             || cmd == CMD_EQ_INT_INT
+            || cmd == CMD_EQ_CHAR_INT
             || cmd == CMD_NOT_CHAR
             || cmd == CMD_RETURN_VOID
             || cmd == CMD_RETURN_INT
@@ -201,6 +202,13 @@ void run_mua()
             temp_char = (char*) temp_int;
             temp_char[0] = temp_int[0] == temp_int[1];
             stack_top -= 7;
+        }
+        else if (cmd == CMD_EQ_CHAR_INT)
+        {
+            temp_char = (char*) (stack_top - 5);
+            temp_int = (int*) (stack_top - 4);
+            temp_char[0] = temp_char[0] == temp_int[0];
+            stack_top -= 4;
         }
         else if (cmd == CMD_ADD_INT_INT)
         {

@@ -58,6 +58,9 @@ class CodeParser(object):
 			self._env[_s] = getattr(defines, _s)
 
 	def _add_func(self, name, r_type):
+		self.variable_table = VariableTable(None)
+		self._env["add_var"] = self.variable_table.add_var
+		self._env["get_var"] = self.variable_table.get_var
 		self.def_func[name] = self.code_address, r_type
 
 	def _run_func(self, name):
@@ -96,7 +99,6 @@ class CodeParser(object):
 		self.code_address = 0
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
-		print self.variable_table.variable
 		self._env["add_var"] = self.variable_table.add_var
 		self._env["get_var"] = self.variable_table.get_var
 

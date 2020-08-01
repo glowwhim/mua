@@ -4,6 +4,7 @@
 TOKEN_PROP_VALUE = "value"
 TOKEN_PROP_DATE_TYPE = "type"
 TOKEN_PROP_LEXEME = "lexeme"
+TOKEN_PROP_ADDRESS_TYPE = "address_type"
 
 
 DATA_TYPE_VOID = "void", "void_value", 0
@@ -99,10 +100,17 @@ OPERATOR_EQ = [
 		(DATA_TYPE_FLOAT, DATA_TYPE_FLOAT, DATA_TYPE_CHAR),
 	],
 ]
-
 OPERATOR_NOT = [
 	"!",
 	[
 		(None, DATA_TYPE_CHAR, DATA_TYPE_CHAR),
+	],
+]
+OPERATOR_ADDRESS = [
+	"&",
+	[
+		(None, DATA_TYPE_CHAR, DATA_TYPE_INT),
+		(None, DATA_TYPE_INT, DATA_TYPE_INT),
+		(None, DATA_TYPE_FLOAT, DATA_TYPE_INT),
 	],
 ]
