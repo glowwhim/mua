@@ -45,8 +45,8 @@ def code(*args):
     print args
 
 
-def add_var(name, data_type):
-    print name, data_type
+def add_var(tokenxxx):
+    pass
 
 
 def get_var(name):
@@ -69,7 +69,8 @@ code(DATA_TYPE_2_RETURN_CMD[pd[1].type])
 code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
 
 # $DataDef -> data_type var_id ;
-add_var(pd[1].lexeme, fpd.type)
+pd[1].type = fpd.type
+add_var(pd[1])
 code(DATA_TYPE_2_PUSH_DATA_CMD[fpd.type], 0)
 
 # $MethodExpr -> var_id ( )
@@ -86,9 +87,9 @@ code(DATA_TYPE_2_PUSH_DATA_CMD[fpd.type], fpd.value)
 rd.type = get_func_return_type(fpd.lexeme)
 
 # $Expr0 -> var_id
-var_address, var_type = get_var(fpd.lexeme)
-rd.type = var_type
-code(DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD[var_type], var_address)
+var_address, token = get_var(fpd.lexeme)
+rd.type = token.type
+code(DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD[token.type], var_address)
 
 # $Expr3 -> $Expr0
 # $Expr4 -> $Expr3
@@ -107,9 +108,9 @@ rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
 
 # $Expr14 -> var_id = $Expr14
-var_address, var_type = get_var(fpd.lexeme)
+var_address, token = get_var(fpd.lexeme)
 code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_INT], var_address)
-cmd = OPERATOR_CMD[(pd[1].lexeme, var_type, pd[2].type)]
+cmd = OPERATOR_CMD[(pd[1].lexeme, token.type, pd[2].type)]
 rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
 
