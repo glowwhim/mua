@@ -145,13 +145,22 @@ def gen_operator_defines():
 				operator2.append(symbol)
 			lines.append("%s = '%s'" % (symbol, op))
 			for l_data, r_data, rtype in op_list:
-				cmd = "CMD_%s_%s_%s" % (define_name, l_data[0].upper(), r_data[0].upper())
-				cmd_name_define[len(cmd_size)] = cmd
-				data_type_2_cmd[(symbol, data_type_list.index(l_data), data_type_list.index(r_data))] = cmd
-				add_cmd(cmd, 0, rtype)
+				if l_data is None:
+					cmd = "CMD_%s_%s" % (define_name, r_data[0].upper())
+					cmd_name_define[len(cmd_size)] = cmd
+					data_type_2_cmd[(symbol, None, data_type_list.index(r_data))] = cmd
+					add_cmd(cmd, 0, rtype)
+				else:
+					cmd = "CMD_%s_%s_%s" % (define_name, l_data[0].upper(), r_data[0].upper())
+					cmd_name_define[len(cmd_size)] = cmd
+					data_type_2_cmd[(symbol, data_type_list.index(l_data), data_type_list.index(r_data))] = cmd
+					add_cmd(cmd, 0, rtype)
 	lines.append("OPERATOR_CMD = {")
 	for k, v in data_type_2_cmd.iteritems():
-		key = "(%s, %s, %s)" % (k[0], data_type_define_name[k[1]], data_type_define_name[k[2]])
+		if k[1] is None:
+			key = "(%s, None, %s)" % (k[0], data_type_define_name[k[2]])
+		else:
+			key = "(%s, %s, %s)" % (k[0], data_type_define_name[k[1]], data_type_define_name[k[2]])
 		lines.append("\t%s: %s, " % (key, str(v)))
 	lines.append("}")
 	lines.append("OPERATOR1 = [")

@@ -41,6 +41,7 @@ void gen_mua()
         fwrite(&c, 1, 1, wfile);
         if (cmd == CMD_PUSH_INT 
             || cmd == CMD_PUSH_SEGMENT_INT 
+            || cmd == CMD_PUSH_SEGMENT_CHAR 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
             || cmd == CMD_RUN
@@ -48,6 +49,12 @@ void gen_mua()
         {
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
+        }
+        else if (cmd == CMD_PUSH_CHAR)
+        {
+            fscanf(rfile, "%d", &d1);
+            char c = (char) d1;
+            fwrite(&c, 1, 1, wfile);
         }
         else if (cmd == CMD_PUSH_FLOAT)
         {
@@ -59,11 +66,13 @@ void gen_mua()
             || cmd == CMD_MUL_INT_FLOAT 
             || cmd == CMD_SET_FLOAT_FLOAT
             || cmd == CMD_SET_INT_INT
+            || cmd == CMD_SET_CHAR_CHAR
             || cmd == CMD_ADD_INT_FLOAT 
             || cmd == CMD_PRINT_CHAR
             || cmd == CMD_PRINT_INT
             || cmd == CMD_LT_INT_FLOAT
             || cmd == CMD_EQ_INT_INT
+            || cmd == CMD_NOT_CHAR
             || cmd == CMD_RETURN_VOID
             || cmd == CMD_RETURN_INT
             || cmd == CMD_RETURN_FLOAT
@@ -116,6 +125,12 @@ void run_mua()
             cmd_address += 4;
             stack_top += 4;
         }
+        else if (cmd == CMD_PUSH_CHAR)
+        {
+            memcpy(stack_top, mua + cmd_address, 1);
+            cmd_address += 1;
+            stack_top += 1;
+        }
         else if (cmd == CMD_PUSH_SEGMENT_INT)
         {
             temp_int = (int*) (mua + cmd_address);
@@ -125,6 +140,16 @@ void run_mua()
             memcpy(stack_top, &i, 4);
             cmd_address += 4;
             stack_top += 4;
+        }
+        else if (cmd == CMD_PUSH_SEGMENT_CHAR)
+        {
+            temp_int = (int*) (mua + cmd_address);
+            unsigned char *int2 = segment_offset + temp_int[0];
+            char c = *(char*)int2;
+            //printf("push setgment int from %d to %d = %d\n", temp_int[0], stack_top, i);
+            memcpy(stack_top, &c, 4);
+            cmd_address += 4;
+            stack_top += 1;
         }
         else if (cmd == CMD_FJ)
         {
@@ -163,6 +188,12 @@ void run_mua()
             temp_int = (int*) (stack_top - 8);
             temp_int[0] = temp_int[0] * temp_int[1];
             stack_top -= 4;
+        }
+        else if (cmd == CMD_NOT_CHAR)
+        {
+            temp_char = (char*) (stack_top - 1);
+            char c = !temp_char[0];
+            temp_char[0] = c;
         }
         else if (cmd == CMD_EQ_INT_INT)
         {
@@ -224,6 +255,16 @@ void run_mua()
             ((int*) (segment_offset + j))[0] = i;
             stack_top -= 8;
         }
+        else if (cmd == CMD_SET_CHAR_CHAR)
+        {
+            temp_char = (char*) (stack_top - 5);
+            temp_int = (int*) (stack_top - 4);
+            char i = temp_char[0];
+            int j = temp_int[0];
+            //printf("set %d to %d\n", i, j);
+            ((char*) (segment_offset + j))[0] = i;
+            stack_top -= 5;
+        }
         else if (cmd == CMD_PRINT_CHAR)
         {
             printf("%d\n", *((char*) (stack_top - 1)));
@@ -281,7 +322,7 @@ void run_mua()
             printf("unknown cmd %d\n", cmd);
             break;
         }
-        //print_stack(thread_stack, segment_offset + stack_top);
+        //print_stack(thread_stack, stack_top);
     }
     //printf("exit address %d\n", cmd_address);
     free(mua);

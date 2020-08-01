@@ -2,6 +2,8 @@
 
 int main()
 {
-    print 1 == 2;
+    char a;
+    a = 1 == 1;
+    print !a;
     return 0;
 }

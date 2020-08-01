@@ -91,7 +91,8 @@ var_address, token = get_var(fpd.lexeme)
 rd.type = token.type
 code(DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD[token.type], var_address)
 
-# $Expr3 -> $Expr0
+# $Expr2 -> $Expr0
+# $Expr3 -> $Expr2
 # $Expr4 -> $Expr3
 # $Expr5 -> $Expr4
 # $Expr6 -> $Expr5
@@ -99,7 +100,12 @@ code(DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD[token.type], var_address)
 # $Expr14 -> $Expr7
 rd.type = fpd.type
 
-# $Expr3 -> $Expr3 * $Expr0
+# $Expr2 -> ! $Expr0
+cmd = OPERATOR_CMD[(pd[0].lexeme, None, pd[1].type)]
+rd.type = CMD_RETURN_DATA_TYPE[cmd]
+code(cmd)
+
+# $Expr3 -> $Expr3 * $Expr2
 # $Expr4 -> $Expr4 + $Expr3
 # $Expr6 -> $Expr6 < $Expr5
 # $Expr7 -> $Expr7 == $Expr6
