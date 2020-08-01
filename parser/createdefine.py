@@ -5,6 +5,7 @@ import origindefines
 
 
 lines = []
+data_type_id = {}
 data_type_list = []
 data_type_define_name = {}
 cmd_size = {}
@@ -22,9 +23,16 @@ def add_cmd(cmd, args_size, rtype=None):
 
 def init_data_type_list():
 	global data_type_list
+	global data_type_id
+	global data_type_define_name
+	_id = 0
 	for attr in dir(origindefines):
 		if attr.startswith("DATA_TYPE_"):
-			data_type_list.append(getattr(origindefines, attr))
+			info = getattr(origindefines, attr)
+			data_type_list.append(info)
+			data_type_define_name[_id] = attr
+			data_type_id[info] = _id
+			_id += 1
 
 
 def copy_defines():
@@ -50,13 +58,11 @@ def copy_defines():
 
 def gen_data_type_defines():
 	global lines
-	global data_type_define_name
 	lines.append("")
 	lines.append("")
-	for i, data_type in enumerate(data_type_list):
+	for data_type in data_type_list:
 		data_type_name = "DATA_TYPE_%s" % data_type[0].upper()
-		lines.append("%s = %s" % (data_type_name, i))
-		data_type_define_name[i] = data_type_name
+		lines.append("%s = %s" % (data_type_name, data_type_id[data_type]))
 	lines.append("DATA_TYPE_SYMBOL = {")
 	for data_type in data_type_list:
 		lines.append("\tDATA_TYPE_%s: '%s', " % (data_type[0].upper(), data_type[0]))
@@ -148,12 +154,12 @@ def gen_operator_defines():
 				if l_data is None:
 					cmd = "CMD_%s_%s" % (define_name, r_data[0].upper())
 					cmd_name_define[len(cmd_size)] = cmd
-					data_type_2_cmd[(symbol, None, data_type_list.index(r_data))] = cmd
+					data_type_2_cmd[(symbol, None, data_type_id[r_data])] = cmd
 					add_cmd(cmd, 0, rtype)
 				else:
 					cmd = "CMD_%s_%s_%s" % (define_name, l_data[0].upper(), r_data[0].upper())
 					cmd_name_define[len(cmd_size)] = cmd
-					data_type_2_cmd[(symbol, data_type_list.index(l_data), data_type_list.index(r_data))] = cmd
+					data_type_2_cmd[(symbol, data_type_id[l_data], data_type_id[r_data])] = cmd
 					add_cmd(cmd, 0, rtype)
 	lines.append("OPERATOR_CMD = {")
 	for k, v in data_type_2_cmd.iteritems():
