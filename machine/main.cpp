@@ -40,15 +40,12 @@ void gen_mua()
         c = (unsigned char) cmd;
         fwrite(&c, 1, 1, wfile);
         if (cmd == CMD_PUSH_INT 
-            || cmd == CMD_PUSH_SEGMENT_INT 
-            || cmd == CMD_PUSH_SEGMENT_CHAR 
             || cmd == CMD_PUSH_ADDRESS 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
             || cmd == CMD_RETURN
             || cmd == CMD_PUSH_ANY
-            || cmd == CMD_RUN
-            || cmd == CMD_PUSH_SEGMENT_FLOAT)
+            || cmd == CMD_RUN)
         {
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
@@ -162,26 +159,6 @@ void run_mua()
             cmd_address += 8;
             stack_top += temp_int[1];
         }
-        else if (cmd == CMD_PUSH_SEGMENT_INT)
-        {
-            temp_int = (int*) (mua + cmd_address);
-            unsigned char *int2 = segment_offset + temp_int[0];
-            int i = *(int*)int2;
-            //printf("push setgment int from %d to %d = %d\n", temp_int[0], stack_top, i);
-            memcpy(stack_top, &i, 4);
-            cmd_address += 4;
-            stack_top += 4;
-        }
-        else if (cmd == CMD_PUSH_SEGMENT_CHAR)
-        {
-            temp_int = (int*) (mua + cmd_address);
-            unsigned char *int2 = segment_offset + temp_int[0];
-            char c = *(char*)int2;
-            //printf("push setgment int from %d to %d = %d\n", temp_int[0], stack_top, i);
-            memcpy(stack_top, &c, 4);
-            cmd_address += 4;
-            stack_top += 1;
-        }
         else if (cmd == CMD_FJ)
         {
             temp_char = (char*) (stack_top - 1);
@@ -206,13 +183,6 @@ void run_mua()
             segment_offset = stack_top + 8;
             stack_top = segment_offset;
             //printf("run %d %d %d\n", temp_int[0], temp_int[1], jump);
-        }
-        else if (cmd == CMD_PUSH_SEGMENT_FLOAT)
-        {
-            temp_int = (int*) (mua + cmd_address);
-            memcpy(stack_top, segment_offset + temp_int[0], 4);
-            cmd_address += 4;
-            stack_top += 4;
         }
         else if (cmd == CMD_MUL_INT_INT)
         {

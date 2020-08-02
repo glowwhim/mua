@@ -201,7 +201,6 @@ def gen_defines():
 	copy_defines()
 	gen_data_type_defines()
 	gen_push_data_cmd()
-	gen_push_segment_data_cmd()
 	gen_print_define()
 	gen_operator_defines()
 	gen_cmd_size_defines()

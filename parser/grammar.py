@@ -117,7 +117,7 @@ rd.type = get_func_return_type(fpd.lexeme)
 # $Expr0 -> var_id
 var_address, token = get_var(fpd.lexeme)
 rd.type = token.type
-code(DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD[token.type], var_address)
+code(CMD_PUSH_FROM_ADDRESS, var_address, DATA_TYPE_SIZE[token.type])
 
 # $Expr1 -> var_id [ int_value ]
 var_address, token = get_var(fpd.lexeme)
