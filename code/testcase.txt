@@ -21,7 +21,7 @@ int test002()
     return 0;
 }
 
-int test003()
+int test003(int xx, int xxx)
 {
     int x[98];
     int i;
@@ -31,7 +31,7 @@ int test003()
     return 0;
 }
 
-int test004()
+int test004(int xxx)
 {
     int a[2];
     a[0] = 999;
@@ -44,6 +44,6 @@ void main()
 {
     test001();
     test002();
-    test003();
-    test004();
+    test003(1, 2);
+    test004(3);
 }
