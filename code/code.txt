@@ -1,10 +1,10 @@
-
+int test(int a, int b)
+{
+    return a + b;
+}
 
 int main()
 {
-    int a[2];
-    a[0] = 999;
-    a[1] = 998 + 1;
-    print a[0] == a[1];
+    print test(1, 2);
     return 0;
 }

@@ -13,6 +13,14 @@ class FakeObj(object):
         pass
 
 
+def _add_func_params_type(_type):
+    pass
+
+
+def clear_func():
+    pass
+
+
 def add_array(x, y):
     pass
 
@@ -84,9 +92,18 @@ pd[1].type = fpd.type
 add_var(pd[1])
 code(CMD_PUSH_ANY, DATA_TYPE_SIZE[fpd.type])
 
+# $MethodExprParams -> $Expr14
+method_params = [str(fpd.type)]
+
+# $MethodExprParams -> $MethodExprParams , $Expr14
+method_params.append(str(pd[2].type))
+
 # $MethodExpr -> var_id ( )
-run_func(fpd.lexeme)
-rd.lexeme = fpd.lexeme
+# $MethodExpr -> var_id ( $MethodExprParams )
+func_name = "%s(%s)" % (fpd.lexeme, ",".join(method_params))
+run_func(func_name)
+rd.lexeme = func_name
+method_params = []
 
 # $Expr0 -> char_value
 # $Expr0 -> int_value
@@ -161,11 +178,24 @@ _fj_end()
 # $While -> $WhileCondition { $StatementList }
 _fj_end()
 
+# $FuncDefHeadParams -> data_type var_id
+func_params_type = [str(fpd.type)]
+pd[1].type = fpd.type
+add_var(pd[1])
+
+# $FuncDefHeadParams -> $FuncDefHeadParams , data_type var_id
+func_params_type.append(str(pd[2].type))
+pd[3].type = pd[2].type
+add_var(pd[3])
+
 # $FuncDefHead -> data_type var_id ( )
-add_func(pd[1].lexeme, fpd.type)
+# $FuncDefHead -> data_type var_id ( $FuncDefHeadParams )
+add_func("%s(%s)" % (pd[1].lexeme, ",".join(func_params_type)), fpd.type)
+func_params_type = []
 
 # $FuncDef -> $FuncDefHead { $StatementList }
 code(CMD_RETURN_VOID)
+clear_func()
 
 # $Program -> $FuncDefList
 # $FuncDefList -> $FuncDef

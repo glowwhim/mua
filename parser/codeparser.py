@@ -58,16 +58,23 @@ class CodeParser(object):
 			"_fj_end": self._fj_end,
 			"_get_code_address": self._get_code_address,
 			"get_func_return_type": self._get_func_return_type,
+			"clear_func": self._clear_func,
+			"func_params_type": [],
+			"method_params": [],
 		}
 		for _s in dir(defines):
 			self._env[_s] = getattr(defines, _s)
+		self._clear_func()
 
 	def _add_func(self, name, r_type):
+		print "add func", name
+		self.def_func[name] = self.code_address, r_type
+
+	def _clear_func(self):
 		self.variable_table = VariableTable(None)
 		self._env["add_var"] = self.variable_table.add_var
 		self._env["get_var"] = self.variable_table.get_var
 		self._env["add_array"] = self.variable_table.add_array
-		self.def_func[name] = self.code_address, r_type
 
 	def _run_func(self, name):
 		if name in self.def_func:
@@ -115,7 +122,7 @@ class CodeParser(object):
 
 	def output_code(self, path):
 		f = open(path, "w")
-		lines = [str(self.code_address), str(self.def_func["main"][0])]
+		lines = [str(self.code_address), str(self.def_func["main()"][0])]
 		for c in self.code_list:
 			cmd = c[0]
 			lines.append("%s %s" % (cmd, " ".join([str(s) for s in c[1:]])))
