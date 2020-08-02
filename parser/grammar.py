@@ -72,7 +72,7 @@ code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
 # $DataDef -> data_type var_id ;
 pd[1].type = fpd.type
 add_var(pd[1])
-code(DATA_TYPE_2_PUSH_DATA_CMD[fpd.type], 0)
+code(CMD_PUSH_ANY, DATA_TYPE_SIZE[fpd.type])
 
 # $MethodExpr -> var_id ( )
 run_func(fpd.lexeme)

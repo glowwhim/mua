@@ -45,6 +45,7 @@ void gen_mua()
             || cmd == CMD_PUSH_ADDRESS 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
+            || cmd == CMD_PUSH_ANY
             || cmd == CMD_RUN
             || cmd == CMD_PUSH_SEGMENT_FLOAT)
         {
@@ -135,6 +136,12 @@ void run_mua()
             memcpy(stack_top, mua + cmd_address, 1);
             cmd_address += 1;
             stack_top += 1;
+        }
+        else if (cmd == CMD_PUSH_ANY)
+        {
+            temp_int = (int*) (mua + cmd_address);
+            cmd_address += 4;
+            stack_top += *temp_int;
         }
         else if (cmd == CMD_PUSH_SEGMENT_INT)
         {
