@@ -102,7 +102,14 @@ var_address, token = get_var(fpd.lexeme)
 rd.type = token.type
 code(DATA_TYPE_2_PUSH_SEGMENT_DATA_CMD[token.type], var_address)
 
-# $Expr2 -> $Expr0
+# $Expr1 -> var_id [ int_value ]
+var_address, token = get_var(fpd.lexeme)
+rd.type = token.address_type
+data_type_size = DATA_TYPE_SIZE[token.address_type]
+code(CMD_PUSH_FROM_ADDRESS, var_address + data_type_size * pd[2].value, data_type_size)
+
+# $Expr1 -> $Expr0
+# $Expr2 -> $Expr1
 # $Expr3 -> $Expr2
 # $Expr4 -> $Expr3
 # $Expr5 -> $Expr4
