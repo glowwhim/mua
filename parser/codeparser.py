@@ -28,6 +28,13 @@ class VariableTable(object):
 		self.variable[name] = self.next_address, token
 		self.next_address += DATA_TYPE_SIZE[token.type]
 
+	def add_array(self, token, size):
+		name = token.lexeme
+		if name in self.variable:
+			raise Exception("%s already define" % name)
+		self.variable[name] = self.next_address, token
+		self.next_address += DATA_TYPE_SIZE[token.type * size]
+
 	def get_var(self, name):
 		return self.variable[name]
 
