@@ -13,6 +13,10 @@ class FakeObj(object):
         pass
 
 
+def add_array(x, y):
+    pass
+
+
 def get_func_return_type(name):
     return 0
 
@@ -68,6 +72,12 @@ code(DATA_TYPE_2_RETURN_CMD[pd[1].type])
 
 # $Print -> print $Expr14 ;
 code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
+
+# $ArrayDef -> data_type var_id [ int_value ] ;
+pd[1].type = DATA_TYPE_ADDRESS
+pd[1].address_type = fpd.type
+add_array(pd[1], pd[3].value)
+code(CMD_PUSH_ANY, pd[3].value * DATA_TYPE_SIZE[fpd.type])
 
 # $DataDef -> data_type var_id ;
 pd[1].type = fpd.type
@@ -152,6 +162,7 @@ code(CMD_RETURN_VOID)
 # $Statement -> $Print
 # $Statement -> $Return
 # $Statement -> $DataDef
+# $Statement -> $ArrayDef
 # $Statement -> $While
 # $StatementList -> $Statement
 # $StatementList -> $StatementList $Statement

@@ -3,9 +3,8 @@
 int main()
 {
     int i;
+    char c[5];
     int j;
-    j = j + 1;
-    print i;
     print j;
     return 0;
 }

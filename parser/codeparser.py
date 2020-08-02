@@ -33,7 +33,7 @@ class VariableTable(object):
 		if name in self.variable:
 			raise Exception("%s already define" % name)
 		self.variable[name] = self.next_address, token
-		self.next_address += DATA_TYPE_SIZE[token.type * size]
+		self.next_address += DATA_TYPE_SIZE[token.address_type] * size
 
 	def get_var(self, name):
 		return self.variable[name]
@@ -58,8 +58,6 @@ class CodeParser(object):
 			"_fj_end": self._fj_end,
 			"_get_code_address": self._get_code_address,
 			"get_func_return_type": self._get_func_return_type,
-			"add_var": self.variable_table.add_var,
-			"get_var": self.variable_table.get_var,
 		}
 		for _s in dir(defines):
 			self._env[_s] = getattr(defines, _s)
@@ -68,6 +66,7 @@ class CodeParser(object):
 		self.variable_table = VariableTable(None)
 		self._env["add_var"] = self.variable_table.add_var
 		self._env["get_var"] = self.variable_table.get_var
+		self._env["add_array"] = self.variable_table.add_array
 		self.def_func[name] = self.code_address, r_type
 
 	def _run_func(self, name):
@@ -106,8 +105,6 @@ class CodeParser(object):
 		self.code_address = 0
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
-		self._env["add_var"] = self.variable_table.add_var
-		self._env["get_var"] = self.variable_table.get_var
 
 	def do_semantics(self, production, rd, pd):
 		# type: (Production, Token, List[Token]) -> None
