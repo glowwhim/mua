@@ -137,6 +137,11 @@ cmd = OPERATOR_CMD[(pd[1].lexeme, token.type, pd[2].type)]
 rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
 
+# $Expr14 -> var_id [ int_value ] = $Expr14
+var_address, token = get_var(fpd.lexeme)
+var_address += DATA_TYPE_SIZE[token.address_type] * pd[2].value
+code(CMD_SET_TO_ADDRESS, var_address, DATA_TYPE_SIZE[token.address_type])
+
 # $WhileBegin -> while
 _loop_begin()
 

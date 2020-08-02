@@ -52,6 +52,13 @@ void gen_mua()
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
         }
+        else if (cmd == CMD_SET_TO_ADDRESS)
+        {
+            fscanf(rfile, "%d", &d1);
+            fwrite(&d1, 4, 1, wfile);
+            fscanf(rfile, "%d", &d1);
+            fwrite(&d1, 4, 1, wfile);
+        }
         else if (cmd == CMD_PUSH_CHAR)
         {
             fscanf(rfile, "%d", &d1);
@@ -142,6 +149,13 @@ void run_mua()
             temp_int = (int*) (mua + cmd_address);
             cmd_address += 4;
             stack_top += *temp_int;
+        }
+        else if (cmd == CMD_SET_TO_ADDRESS)
+        {
+            temp_int = (int*) (mua + cmd_address);
+            memcpy(segment_offset + temp_int[0], stack_top - temp_int[1], temp_int[1]);
+            cmd_address += 8;
+            stack_top -= temp_int[1];
         }
         else if (cmd == CMD_PUSH_SEGMENT_INT)
         {
