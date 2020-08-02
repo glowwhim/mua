@@ -45,6 +45,7 @@ void gen_mua()
             || cmd == CMD_PUSH_ADDRESS 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
+            || cmd == CMD_RETURN
             || cmd == CMD_PUSH_ANY
             || cmd == CMD_RUN
             || cmd == CMD_PUSH_SEGMENT_FLOAT)
@@ -85,9 +86,6 @@ void gen_mua()
             || cmd == CMD_EQ_ADDRESS_ADDRESS
             || cmd == CMD_EQ_CHAR_INT
             || cmd == CMD_NOT_CHAR
-            || cmd == CMD_RETURN_VOID
-            || cmd == CMD_RETURN_INT
-            || cmd == CMD_RETURN_FLOAT
             || cmd == CMD_PRINT_ADDRESS
             || cmd == CMD_LT_INT_INT
             || cmd == CMD_PRINT_FLOAT)
@@ -326,40 +324,17 @@ void run_mua()
             printf("%lf\n", *((float*) (stack_top - 4)));
             stack_top -= 4;
         }
-        else if (cmd == CMD_RETURN_VOID)
+        else if (cmd == CMD_RETURN)
         {
-            temp_int = (int*) (stack_top - 4);
-            int i = *temp_int;
+            temp_int = (int*) (mua + cmd_address);
+            int return_type_size = *temp_int;
+            unsigned char *return_address = stack_top - return_type_size;
             temp_int = (int*) (segment_offset - 8);
             cmd_address = temp_int[0];
             stack_top = segment_offset - 8;
             segment_offset = thread_stack + temp_int[1];
-            //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
-            if (segment_offset == thread_stack) break;
-        }
-        else if (cmd == CMD_RETURN_INT)
-        {
-            temp_int = (int*) (stack_top - 4);
-            int i = *temp_int;
-            temp_int = (int*) (segment_offset - 8);
-            cmd_address = temp_int[0];
-            stack_top = segment_offset - 8;
-            segment_offset = thread_stack + temp_int[1];
-            memcpy(stack_top, &i, 4);
-            stack_top += 4;
-            //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
-            if (segment_offset == thread_stack) break;
-        }
-        else if (cmd == CMD_RETURN_FLOAT)
-        {
-            temp_float = (float*) (stack_top - 4);
-            float f = *temp_float;
-            temp_int = (int*) (segment_offset - 8);
-            cmd_address = temp_int[0];
-            stack_top = segment_offset - 8;
-            segment_offset = thread_stack + temp_int[1];
-            memcpy(stack_top, &f, 4);
-            stack_top += 4;
+            memcpy(stack_top, return_address, return_type_size);
+            stack_top += return_type_size;
             //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
             if (segment_offset == thread_stack) break;
         }

@@ -98,19 +98,6 @@ def gen_print_define():
 	lines.append("}")
 
 
-def gen_return_define():
-	global lines
-	lines.append("")
-	lines.append("")
-	lines.append("SYMBOL_RETURN = 'return'")
-	for data_type in all_data_type.values():
-		add_cmd("CMD_RETURN_%s" % data_type["short_name"], 0)
-	lines.append("DATA_TYPE_2_RETURN_CMD = {")
-	for data_type in all_data_type.values():
-		lines.append("\t%s: %s, " % (data_type["name"], "CMD_RETURN_%s" % data_type["short_name"]))
-	lines.append("}")
-
-
 def gen_push_data_cmd():
 	global lines
 	lines.append("")
@@ -216,7 +203,6 @@ def gen_defines():
 	gen_push_data_cmd()
 	gen_push_segment_data_cmd()
 	gen_print_define()
-	gen_return_define()
 	gen_operator_defines()
 	gen_cmd_size_defines()
 	gen_cmd_return_data_type_defines()

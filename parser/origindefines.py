@@ -17,6 +17,7 @@ DATA_TYPE_ADDRESS = "address", "address_value", 4
 SYMBOL_START = "$START"
 SYMBOL_END = "#"
 SYMBOL_DATA_TYPE = "data_type"
+SYMBOL_RETURN = "return"
 SYMBOL_VAR_ID = "var_id"
 SYMBOL_WHILE = "while"
 SYMBOL_SEMICOLON = ";"
@@ -35,6 +36,7 @@ CMD_RUN = 4
 CMD_PUSH_ANY = 4
 CMD_SET_TO_ADDRESS = 8
 CMD_PUSH_FROM_ADDRESS = 8
+CMD_RETURN = 4
 
 
 OPERATOR_ADD = [

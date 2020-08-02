@@ -40,10 +40,21 @@ int test004(int xxx)
     return 0;
 }
 
+int test005()
+{
+    return 1 + 2;
+}
+
+void test006()
+{
+    print test005() == 3;
+}
+
 void main()
 {
     test001();
     test002();
     test003(1, 2);
     test004(3);
+    test006();
 }
