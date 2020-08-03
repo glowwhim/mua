@@ -10,6 +10,7 @@ int test001()
         b = b + 1;
     }
     print a == 5050;
+    return 0;
 }
 
 int test002()
@@ -50,6 +51,18 @@ void test006()
     print test005() == 3;
 }
 
+int test007(int i, int j)
+{
+    int k;
+    k = 1;
+    return i + j + k;
+}
+
+void test008()
+{
+    print test007(2, 3) == 6;
+}
+
 void main()
 {
     test001();
@@ -57,4 +70,5 @@ void main()
     test003(1, 2);
     test004(3);
     test006();
+    test008();
 }

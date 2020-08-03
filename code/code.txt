@@ -1,9 +1,11 @@
-float test(int i, float c)
+int test(int i, int j)
 {
-    return 1.5;
+    int k;
+    k = 1;
+    return i + j + k;
 }
 
 void main()
 {
-    print test(1, 1.5);
+    print test(2, 3);
 }

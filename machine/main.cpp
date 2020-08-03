@@ -115,10 +115,10 @@ void run_mua()
 
     unsigned char cmd;
     unsigned char thread_stack[1024];
-    unsigned char *segment_offset = thread_stack + 8;
-    unsigned char *stack_top = segment_offset;
-    ((int*) thread_stack)[0] = 0;
-    ((int*) thread_stack)[1] = 0;
+    unsigned char *segment_offset = thread_stack;
+    unsigned char *stack_top = segment_offset + 8;
+    ((int*) thread_stack)[0] = -1;
+    ((int*) thread_stack)[1] = -1;
 
     char *temp_char;
     int *temp_int;
@@ -182,8 +182,8 @@ void run_mua()
             temp_int[0] = cmd_address + 8;
             temp_int[1] = segment_offset - thread_stack;
             cmd_address = jump;
-            segment_offset = stack_top + 8;
-            stack_top = segment_offset;
+            segment_offset = stack_top - params_size;
+            stack_top += 8;
             //printf("run %d %d %d\n", temp_int[0], temp_int[1], jump);
         }
         else if (cmd == CMD_MUL_INT_INT)
@@ -302,14 +302,14 @@ void run_mua()
             int return_type_size = *temp_int;
             int func_params_size = temp_int[1];
             unsigned char *return_address = stack_top - return_type_size;
-            temp_int = (int*) (segment_offset - 8);
+            temp_int = (int*) (segment_offset + func_params_size);
             cmd_address = temp_int[0];
-            stack_top = segment_offset - 8;
+            stack_top = segment_offset;
             segment_offset = thread_stack + temp_int[1];
             memcpy(stack_top, return_address, return_type_size);
             stack_top += return_type_size;
             //printf("return %d %d %d\n", cmd_address, temp_int[1], stack_top);
-            if (segment_offset == thread_stack) break;
+            if (cmd_address == -1) break;
         }
         else
         {

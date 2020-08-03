@@ -21,6 +21,9 @@ class VariableTable(object):
 		self.variable = {}
 		self.next_address = 0
 
+	def move_address(self, offset):
+		self.next_address += offset
+
 	def add_var(self, token):
 		name = token.lexeme
 		if name in self.variable:
@@ -75,6 +78,7 @@ class CodeParser(object):
 		self._env["add_var"] = self.variable_table.add_var
 		self._env["get_var"] = self.variable_table.get_var
 		self._env["add_array"] = self.variable_table.add_array
+		self._env["move_address"] = self.variable_table.move_address
 
 	def _run_func(self, name, func_params_size):
 		if name in self.def_func:
