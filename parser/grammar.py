@@ -30,7 +30,7 @@ def get_func_return_type(name):
     return 0
 
 
-def run_func(name):
+def run_func(name, func_params_size):
     pass
 
 
@@ -98,15 +98,16 @@ add_var(pd[1])
 code(CMD_PUSH_ANY, DATA_TYPE_SIZE[fpd.type])
 
 # $MethodExprParams -> $Expr14
-method_params = [str(fpd.type)]
+method_params = [fpd.type]
 
 # $MethodExprParams -> $MethodExprParams , $Expr14
-method_params.append(str(pd[2].type))
+method_params.append(pd[2].type)
 
 # $MethodExpr -> var_id ( )
 # $MethodExpr -> var_id ( $MethodExprParams )
-func_name = "%s(%s)" % (fpd.lexeme, ",".join(method_params))
-run_func(func_name)
+func_params_size = sum([DATA_TYPE_SIZE[i] for i in method_params])
+func_name = "%s(%s)" % (fpd.lexeme, ",".join([str(i) for i in method_params]))
+run_func(func_name, func_params_size)
 rd.lexeme = func_name
 method_params = []
 

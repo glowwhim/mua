@@ -43,13 +43,15 @@ void gen_mua()
             || cmd == CMD_PUSH_ADDRESS 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
-            || cmd == CMD_PUSH_ANY
-            || cmd == CMD_RUN)
+            || cmd == CMD_PUSH_ANY)
         {
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
         }
-        else if (cmd == CMD_SET_TO_ADDRESS || cmd == CMD_PUSH_FROM_ADDRESS || cmd == CMD_RETURN)
+        else if (cmd == CMD_SET_TO_ADDRESS 
+            || cmd == CMD_PUSH_FROM_ADDRESS 
+            || cmd == CMD_RUN 
+            || cmd == CMD_RETURN)
         {
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
@@ -175,8 +177,9 @@ void run_mua()
         {
             temp_int = (int*) (mua + cmd_address);
             int jump = *temp_int;
+            int params_size = temp_int[1];
             temp_int = (int*) stack_top;
-            temp_int[0] = cmd_address + 4;
+            temp_int[0] = cmd_address + 8;
             temp_int[1] = segment_offset - thread_stack;
             cmd_address = jump;
             segment_offset = stack_top + 8;

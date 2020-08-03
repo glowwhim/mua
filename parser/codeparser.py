@@ -76,11 +76,11 @@ class CodeParser(object):
 		self._env["get_var"] = self.variable_table.get_var
 		self._env["add_array"] = self.variable_table.add_array
 
-	def _run_func(self, name):
+	def _run_func(self, name, func_params_size):
 		if name in self.def_func:
-			self._code(CMD_RUN, self.def_func[name][0])
+			self._code(CMD_RUN, self.def_func[name][0], func_params_size)
 		else:
-			self._code(CMD_RUN, 0)
+			self._code(CMD_RUN, 0, func_params_size)
 
 	def _get_func_return_type(self, name):
 		if name in self.def_func:
