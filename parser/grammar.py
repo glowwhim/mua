@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Tuple
 from defines import *
+func_params_type = []
 
 
 class FakeObj(object):
@@ -73,10 +74,14 @@ pd = [FakeObj(), ]
 
 # ==============================grammar are follows==============================
 # $Return -> return ;
-code(CMD_RETURN, 0)
+func_params_size = sum([DATA_TYPE_SIZE[i] for i in func_params_type])
+code(CMD_RETURN, 0, func_params_size)
+func_params_type = []
 
 # $Return -> return $Expr14 ;
-code(CMD_RETURN, DATA_TYPE_SIZE[pd[1].type])
+func_params_size = sum([DATA_TYPE_SIZE[i] for i in func_params_type])
+code(CMD_RETURN, DATA_TYPE_SIZE[pd[1].type], func_params_size)
+func_params_type = []
 
 # $Print -> print $Expr14 ;
 code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
@@ -179,23 +184,24 @@ _fj_end()
 _fj_end()
 
 # $FuncDefHeadParams -> data_type var_id
-func_params_type = [str(fpd.type)]
+func_params_type = [fpd.type]
 pd[1].type = fpd.type
 add_var(pd[1])
 
 # $FuncDefHeadParams -> $FuncDefHeadParams , data_type var_id
-func_params_type.append(str(pd[2].type))
+func_params_type.append(pd[2].type)
 pd[3].type = pd[2].type
 add_var(pd[3])
 
 # $FuncDefHead -> data_type var_id ( )
 # $FuncDefHead -> data_type var_id ( $FuncDefHeadParams )
-add_func("%s(%s)" % (pd[1].lexeme, ",".join(func_params_type)), fpd.type)
-func_params_type = []
+add_func("%s(%s)" % (pd[1].lexeme, ",".join([str(i) for i in func_params_type])), fpd.type)
 
 # $FuncDef -> $FuncDefHead { $StatementList }
-code(CMD_RETURN, 0)
+func_params_size = sum([DATA_TYPE_SIZE[i] for i in func_params_type])
+code(CMD_RETURN, 0, func_params_size)
 clear_func()
+func_params_type = []
 
 # $Program -> $FuncDefList
 # $FuncDefList -> $FuncDef
