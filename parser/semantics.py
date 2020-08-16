@@ -3,7 +3,7 @@ from defines import *
 from codeparser import VariableTable
 
 
-variable_table = None  # type: VariableTable
+variable_table = VariableTable()
 code_address = 0
 code_list = []
 def_func = {}
