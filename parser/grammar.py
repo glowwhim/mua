@@ -55,11 +55,6 @@ def _fj_end():
     pass
 
 
-def code(*args):
-    # type: (Tuple[object]) -> None
-    print args
-
-
 def add_var(tokenxxx):
     pass
 

@@ -47,13 +47,11 @@ class CodeParser(object):
 	def __init__(self):
 		self.variable_table = VariableTable(None)
 		self.semantics_code = ""
-		self.code_list = []
 		self.def_func = {}
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
 		self._env = {
 			"copy": _copy_prop,
-			"code": self._code,
 			"add_func": self._add_func,
 			"run_func": self._run_func,
 			"_loop_begin": self._loop_begin,
@@ -91,9 +89,9 @@ class CodeParser(object):
 
 	def _run_func(self, name, func_params_size):
 		if name in self.def_func:
-			self._code(CMD_RUN, self.def_func[name][0], func_params_size)
+			self._env["code"](CMD_RUN, self.def_func[name][0], func_params_size)
 		else:
-			self._code(CMD_RUN, 0, func_params_size)
+			self._env["code"](CMD_RUN, 0, func_params_size)
 
 	def _get_func_return_type(self, name):
 		if name in self.def_func:
@@ -101,24 +99,19 @@ class CodeParser(object):
 		else:
 			return DATA_TYPE_INT
 
-	def _code(self, cmd, *args):
-		self._env["code_address"] += CMD_SIZE[cmd]
-		self.code_list.append([cmd] + [i for i in args])
-
 	def _loop_begin(self):
 		self.loop_begin_stack.append(self._env["code_address"])
 
 	def _fj_begin(self):
-		self.loop_fj_stack.append(len(self.code_list))
-		self._code(CMD_FJ, 0)
+		self.loop_fj_stack.append(len(self._env["code_list"]))
+		self._env["code"](CMD_FJ, 0)
 
 	def _fj_end(self):
-		self._code(CMD_JUMP, self.loop_begin_stack.pop())
-		self.code_list[self.loop_fj_stack.pop()][1] = self._env["code_address"]
+		self._env["code"](CMD_JUMP, self.loop_begin_stack.pop())
+		self._env["code_list"][self.loop_fj_stack.pop()][1] = self._env["code_address"]
 
 	def do_semantics_start(self):
 		self.variable_table = VariableTable(None)
-		self.code_list = []
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
 		exec (self.semantics_code, self._env)
@@ -133,7 +126,7 @@ class CodeParser(object):
 	def output_code(self, path):
 		f = open(path, "w")
 		lines = [str(self._env["code_address"]), str(self.def_func["main()"][0])]
-		for c in self.code_list:
+		for c in self._env["code_list"]:
 			cmd = c[0]
 			lines.append("%s %s" % (cmd, " ".join([str(s) for s in c[1:]])))
 		f.write("\n".join(lines))
@@ -148,7 +141,7 @@ class CodeParser(object):
 				if not isinstance(cmd, int):
 					continue
 				cmd_name[cmd] = attr
-		for c in self.code_list:
+		for c in self._env["code_list"]:
 			cmd = c[0]
 			print "%s: %s %s" % (address, cmd_name[cmd], " ".join([str(s) for s in c[1:]]))
 			address += CMD_SIZE[cmd]
