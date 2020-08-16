@@ -9,7 +9,7 @@ class VariableTable(object):
 
 	parent = None  # type: VariableTable
 
-	def __init__(self, parent):
+	def __init__(self, parent=None):
 		# type: (VariableTable) -> None
 		self.parent = parent
 		self.variable = {}
@@ -39,16 +39,13 @@ class VariableTable(object):
 class CodeParser(object):
 
 	def __init__(self):
-		self.variable_table = VariableTable(None)
 		self.semantics_code = ""
 		self._env = {
-			"clear_func": self._clear_func,
 			"func_params_type": [],
 			"method_params": [],
 		}
 		for _s in dir(defines):
 			self._env[_s] = getattr(defines, _s)
-		self._clear_func()
 		self._load_semantics_code()
 		exec (self.semantics_code, self._env)
 
@@ -61,15 +58,7 @@ class CodeParser(object):
 		self.semantics_code = f.read()
 		f.close()
 
-	def _clear_func(self):
-		self.variable_table = VariableTable(None)
-		self._env["add_var"] = self.variable_table.add_var
-		self._env["get_var"] = self.variable_table.get_var
-		self._env["add_array"] = self.variable_table.add_array
-		self._env["move_address"] = self.variable_table.move_address
-
 	def do_semantics_start(self):
-		self.variable_table = VariableTable(None)
 		self._env["do_semantics_start"]()
 
 	def do_semantics(self, production, rd, pd):

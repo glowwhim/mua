@@ -13,26 +13,6 @@ class FakeObj(object):
         pass
 
 
-def move_address(offset):
-    pass
-
-
-def clear_func():
-    pass
-
-
-def add_array(x, y):
-    pass
-
-
-def add_var(tokenxxx):
-    pass
-
-
-def get_var(name):
-    return 0, ""
-
-
 rd = FakeObj()
 fpd = FakeObj()
 pd = [FakeObj(), ]
@@ -55,12 +35,12 @@ code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
 # $ArrayDef -> data_type var_id [ int_value ] ;
 pd[1].type = DATA_TYPE_ADDRESS
 pd[1].address_type = fpd.type
-add_array(pd[1], pd[3].value)
+variable_table.add_array(pd[1], pd[3].value)
 code(CMD_PUSH_ANY, pd[3].value * DATA_TYPE_SIZE[fpd.type])
 
 # $DataDef -> data_type var_id ;
 pd[1].type = fpd.type
-add_var(pd[1])
+variable_table.add_var(pd[1])
 code(CMD_PUSH_ANY, DATA_TYPE_SIZE[fpd.type])
 
 # $MethodExprParams -> $Expr14
@@ -87,12 +67,12 @@ code(DATA_TYPE_2_PUSH_DATA_CMD[fpd.type], fpd.value)
 rd.type = get_func_return_type(fpd.lexeme)
 
 # $Expr0 -> var_id
-var_address, token = get_var(fpd.lexeme)
+var_address, token = variable_table.get_var(fpd.lexeme)
 rd.type = token.type
 code(CMD_PUSH_FROM_ADDRESS, var_address, DATA_TYPE_SIZE[token.type])
 
 # $Expr1 -> var_id [ int_value ]
-var_address, token = get_var(fpd.lexeme)
+var_address, token = variable_table.get_var(fpd.lexeme)
 rd.type = token.address_type
 data_type_size = DATA_TYPE_SIZE[token.address_type]
 code(CMD_PUSH_FROM_ADDRESS, var_address + data_type_size * pd[2].value, data_type_size)
@@ -113,7 +93,7 @@ rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
 
 # $Expr2 -> & var_id
-var_address, token = get_var(pd[1].lexeme)
+var_address, token = variable_table.get_var(pd[1].lexeme)
 rd.type = DATA_TYPE_ADDRESS
 rd.address_type = token.type
 code(CMD_PUSH_ADDRESS, var_address)
@@ -127,14 +107,14 @@ rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
 
 # $Expr14 -> var_id = $Expr14
-var_address, token = get_var(fpd.lexeme)
+var_address, token = variable_table.get_var(fpd.lexeme)
 code(DATA_TYPE_2_PUSH_DATA_CMD[DATA_TYPE_INT], var_address)
 cmd = OPERATOR_CMD[(pd[1].lexeme, token.type, pd[2].type)]
 rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
 
 # $Expr14 -> var_id [ int_value ] = $Expr14
-var_address, token = get_var(fpd.lexeme)
+var_address, token = variable_table.get_var(fpd.lexeme)
 var_address += DATA_TYPE_SIZE[token.address_type] * pd[2].value
 code(CMD_SET_TO_ADDRESS, var_address, DATA_TYPE_SIZE[token.address_type])
 
@@ -153,17 +133,17 @@ fj_end()
 # $FuncDefHeadParams -> data_type var_id
 func_params_type = [fpd.type]
 pd[1].type = fpd.type
-add_var(pd[1])
+variable_table.add_var(pd[1])
 
 # $FuncDefHeadParams -> $FuncDefHeadParams , data_type var_id
 func_params_type.append(pd[2].type)
 pd[3].type = pd[2].type
-add_var(pd[3])
+variable_table.add_var(pd[3])
 
 # $FuncDefHead -> data_type var_id ( )
 # $FuncDefHead -> data_type var_id ( $FuncDefHeadParams )
 add_func("%s(%s)" % (pd[1].lexeme, ",".join([str(i) for i in func_params_type])), fpd.type)
-move_address(4)
+variable_table.move_address(4)
 
 # $FuncDef -> $FuncDefHead { $StatementList }
 func_params_size = sum([DATA_TYPE_SIZE[i] for i in func_params_type])

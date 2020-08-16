@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from defines import *
+from codeparser import VariableTable
 
 
+variable_table = None  # type: VariableTable
 code_address = 0
 code_list = []
 def_func = {}
@@ -9,11 +11,18 @@ loop_begin_stack = []
 loop_fj_stack = []
 
 
+def clear_func():
+	global variable_table
+	variable_table = VariableTable()
+
+
 def do_semantics_start():
 	global code_address
 	global code_list
 	global loop_begin_stack
 	global loop_fj_stack
+	global variable_table
+	variable_table = VariableTable()
 	code_address = 0
 	code_list = []
 	loop_begin_stack = []
