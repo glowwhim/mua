@@ -177,6 +177,12 @@ void run_mua()
         }
         else if (cmd == CMD_RUN)
         {
+            /*
+            params
+            next_cmd_address
+            segment_offset
+            ...
+            */
             temp_int = (int*) (mua + cmd_address);
             int jump = *temp_int;
             int params_size = temp_int[1];
