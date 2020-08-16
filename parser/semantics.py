@@ -18,7 +18,7 @@ def clear_func():
 	variable_table = VariableTable()
 
 
-def do_semantics_start():
+def on_parse_start():
 	global code_address
 	global code_list
 	global loop_begin_stack

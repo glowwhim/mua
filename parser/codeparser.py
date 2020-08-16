@@ -53,8 +53,8 @@ class CodeParser(object):
 		f.close()
 		exec (self.semantics_code, self._env)
 
-	def do_semantics_start(self):
-		self._env["do_semantics_start"]()
+	def on_parse_start(self):
+		self._env["on_parse_start"]()
 
 	def do_semantics(self, production, rd, pd):
 		# type: (Production, Token, List[Token]) -> None

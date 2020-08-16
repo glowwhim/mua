@@ -445,7 +445,7 @@ class Parser(object):
 		code_parser.output_code(output_path)
 
 	def _parse(self, lr_table, token_list, code_parser):
-		code_parser.do_semantics_start()
+		code_parser.on_parse_start()
 		cursor = 0
 		state_stack = [0]
 		token_stack = [SYMBOL_END]
