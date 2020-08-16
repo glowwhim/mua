@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from semantics import *
-func_params_type = []
 
 
 class FakeObj(object):

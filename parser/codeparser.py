@@ -40,16 +40,10 @@ class CodeParser(object):
 
 	def __init__(self):
 		self.semantics_code = ""
-		self._env = {
-			"func_params_type": [],
-			"method_params": [],
-		}
-		for _s in dir(defines):
-			self._env[_s] = getattr(defines, _s)
-		self._load_semantics_code()
-		exec (self.semantics_code, self._env)
+		self._env = {}
+		self._init_semantics_code()
 
-	def _load_semantics_code(self):
+	def _init_semantics_code(self):
 		import os
 		import sys
 		root_path = os.path.split(sys.argv[0])[0]
@@ -57,6 +51,7 @@ class CodeParser(object):
 		f = open(semantics_path)
 		self.semantics_code = f.read()
 		f.close()
+		exec (self.semantics_code, self._env)
 
 	def do_semantics_start(self):
 		self._env["do_semantics_start"]()

@@ -9,6 +9,8 @@ code_list = []
 def_func = {}
 loop_begin_stack = []
 loop_fj_stack = []
+func_params_type = []
+method_params = []
 
 
 def clear_func():
