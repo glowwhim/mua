@@ -47,13 +47,8 @@ class CodeParser(object):
 	def __init__(self):
 		self.variable_table = VariableTable(None)
 		self.semantics_code = ""
-		self.loop_begin_stack = []
-		self.loop_fj_stack = []
 		self._env = {
 			"copy": _copy_prop,
-			"_loop_begin": self._loop_begin,
-			"_fj_begin": self._fj_begin,
-			"_fj_end": self._fj_end,
 			"clear_func": self._clear_func,
 			"func_params_type": [],
 			"method_params": [],
@@ -79,21 +74,8 @@ class CodeParser(object):
 		self._env["add_array"] = self.variable_table.add_array
 		self._env["move_address"] = self.variable_table.move_address
 
-	def _loop_begin(self):
-		self.loop_begin_stack.append(self._env["code_address"])
-
-	def _fj_begin(self):
-		self.loop_fj_stack.append(len(self._env["code_list"]))
-		self._env["code"](CMD_FJ, 0)
-
-	def _fj_end(self):
-		self._env["code"](CMD_JUMP, self.loop_begin_stack.pop())
-		self._env["code_list"][self.loop_fj_stack.pop()][1] = self._env["code_address"]
-
 	def do_semantics_start(self):
 		self.variable_table = VariableTable(None)
-		self.loop_begin_stack = []
-		self.loop_fj_stack = []
 		exec (self.semantics_code, self._env)
 
 	def do_semantics(self, production, rd, pd):

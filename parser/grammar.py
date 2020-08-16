@@ -29,18 +29,6 @@ def add_array(x, y):
     pass
 
 
-def _loop_begin():
-    pass
-
-
-def _fj_begin():
-    pass
-
-
-def _fj_end():
-    pass
-
-
 def add_var(tokenxxx):
     pass
 
@@ -155,16 +143,16 @@ var_address += DATA_TYPE_SIZE[token.address_type] * pd[2].value
 code(CMD_SET_TO_ADDRESS, var_address, DATA_TYPE_SIZE[token.address_type])
 
 # $WhileBegin -> while
-_loop_begin()
+loop_begin()
 
 # $WhileCondition -> $WhileBegin ( $Expr14 )
-_fj_begin()
+fj_begin()
 
 # $While -> $WhileCondition $Expr14 ;
-_fj_end()
+fj_end()
 
 # $While -> $WhileCondition { $StatementList }
-_fj_end()
+fj_end()
 
 # $FuncDefHeadParams -> data_type var_id
 func_params_type = [fpd.type]
