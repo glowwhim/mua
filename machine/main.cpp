@@ -43,14 +43,16 @@ void gen_mua()
             || cmd == CMD_PUSH_ADDRESS 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
+            || cmd == CMD_SET_TO_ARRAY
+            || cmd == CMD_INIT_ARRAY
+            || cmd == CMD_PUSH_FROM_SEGMENT
             || cmd == CMD_PUSH_FROM_ADDRESS
             || cmd == CMD_PUSH_ANY)
         {
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
         }
-        else if (cmd == CMD_SET_TO_ARRAY 
-            || cmd == CMD_RUN 
+        else if (cmd == CMD_RUN 
             || cmd == CMD_RETURN)
         {
             fscanf(rfile, "%d", &d1);
@@ -140,6 +142,13 @@ void run_mua()
             cmd_address += 1;
             stack_top += 1;
         }
+        else if (cmd == CMD_INIT_ARRAY)
+        {
+            temp_int = (int*) (mua + cmd_address);
+            ((int*) stack_top)[0] = stack_top - thread_stack + 4;
+            cmd_address += 4;
+            stack_top += temp_int[0] + 4;
+        }
         else if (cmd == CMD_PUSH_ANY)
         {
             temp_int = (int*) (mua + cmd_address);
@@ -149,19 +158,28 @@ void run_mua()
         else if (cmd == CMD_SET_TO_ARRAY)
         {
             temp_int = (int*) (mua + cmd_address);
-            int array_address = temp_int[0];
-            int size = temp_int[1];
-            stack_top -= (size + 4);
+            int size = temp_int[0];
+            stack_top -= (size + 8);
             int array_index = * (int*) stack_top;
-            memcpy(segment_offset + array_address + size * array_index, stack_top + 4, size);
-            cmd_address += 8;
+            int array_address = * (int*) (stack_top + 4 + size);
+            memcpy(thread_stack + array_address + size * array_index, stack_top + 4, size);
+            cmd_address += 4;
+        }
+        else if (cmd == CMD_PUSH_FROM_SEGMENT)
+        {
+            int size = * (int*) (mua + cmd_address);
+            stack_top -= 4;
+            temp_int = (int*) stack_top;
+            memcpy(stack_top, segment_offset + temp_int[0], size);
+            cmd_address += 4;
+            stack_top += size;
         }
         else if (cmd == CMD_PUSH_FROM_ADDRESS)
         {
             int size = * (int*) (mua + cmd_address);
             stack_top -= 4;
             temp_int = (int*) stack_top;
-            memcpy(stack_top, segment_offset + temp_int[0], size);
+            memcpy(stack_top, thread_stack + temp_int[0], size);
             cmd_address += 4;
             stack_top += size;
         }

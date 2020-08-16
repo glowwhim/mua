@@ -35,7 +35,7 @@ code(DATA_TYPE_2_PRINT_CMD[pd[1].type])
 pd[1].type = DATA_TYPE_ADDRESS
 pd[1].address_type = fpd.type
 variable_table.add_array(pd[1], pd[3].value)
-code(CMD_PUSH_ANY, pd[3].value * DATA_TYPE_SIZE[fpd.type])
+code(CMD_INIT_ARRAY, pd[3].value * DATA_TYPE_SIZE[fpd.type])
 
 # $DataDef -> data_type var_id ;
 pd[1].type = fpd.type
@@ -69,7 +69,7 @@ rd.type = get_func_return_type(fpd.lexeme)
 var_address, token = variable_table.get_var(fpd.lexeme)
 rd.type = token.type
 code(CMD_PUSH_INT, var_address)
-code(CMD_PUSH_FROM_ADDRESS, DATA_TYPE_SIZE[token.type])
+code(CMD_PUSH_FROM_SEGMENT, DATA_TYPE_SIZE[token.type])
 
 # $Expr1 -> var_id [ $Expr14 ]
 var_address, token = variable_table.get_var(fpd.lexeme)
@@ -78,6 +78,7 @@ data_type_size = DATA_TYPE_SIZE[token.address_type]
 code(CMD_PUSH_INT, data_type_size)
 code(CMD_MUL_INT_INT)
 code(CMD_PUSH_INT, var_address)
+code(CMD_PUSH_FROM_SEGMENT, 4)
 code(CMD_ADD_INT_INT)
 code(CMD_PUSH_FROM_ADDRESS, data_type_size)
 
@@ -119,7 +120,9 @@ code(cmd)
 
 # $Expr14 -> var_id [ $Expr14 ] = $Expr14
 var_address, token = variable_table.get_var(fpd.lexeme)
-code(CMD_SET_TO_ARRAY, var_address, DATA_TYPE_SIZE[token.address_type])
+code(CMD_PUSH_INT, var_address)
+code(CMD_PUSH_FROM_SEGMENT, 4)
+code(CMD_SET_TO_ARRAY, DATA_TYPE_SIZE[token.address_type])
 
 # $WhileBegin -> while
 loop_begin()

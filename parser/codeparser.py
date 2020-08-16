@@ -30,7 +30,7 @@ class VariableTable(object):
 		if name in self.variable:
 			raise Exception("%s already define" % name)
 		self.variable[name] = self.next_address, token
-		self.next_address += DATA_TYPE_SIZE[token.address_type] * size
+		self.next_address += (DATA_TYPE_SIZE[token.address_type] * size + 4)
 
 	def get_var(self, name):
 		return self.variable[name]
