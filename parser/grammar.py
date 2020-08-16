@@ -68,13 +68,15 @@ rd.type = get_func_return_type(fpd.lexeme)
 # $Expr0 -> var_id
 var_address, token = variable_table.get_var(fpd.lexeme)
 rd.type = token.type
-code(CMD_PUSH_FROM_ADDRESS, var_address, DATA_TYPE_SIZE[token.type])
+code(CMD_PUSH_INT, var_address)
+code(CMD_PUSH_FROM_ADDRESS, DATA_TYPE_SIZE[token.type])
 
 # $Expr1 -> var_id [ int_value ]
 var_address, token = variable_table.get_var(fpd.lexeme)
 rd.type = token.address_type
 data_type_size = DATA_TYPE_SIZE[token.address_type]
-code(CMD_PUSH_FROM_ADDRESS, var_address + data_type_size * pd[2].value, data_type_size)
+code(CMD_PUSH_INT, var_address + data_type_size * pd[2].value)
+code(CMD_PUSH_FROM_ADDRESS, data_type_size)
 
 # $Expr1 -> $Expr0
 # $Expr2 -> $Expr1

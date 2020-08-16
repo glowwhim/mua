@@ -63,6 +63,13 @@ void test008()
     print test007(2, 3) == 6;
 }
 
+void test009()
+{
+    int a[4];
+    a[3] = 998;
+    print a[3] == 998;
+}
+
 void main()
 {
     test001();
@@ -71,4 +78,5 @@ void main()
     test004(3);
     test006();
     test008();
+    test009();
 }

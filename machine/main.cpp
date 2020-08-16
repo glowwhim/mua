@@ -43,13 +43,13 @@ void gen_mua()
             || cmd == CMD_PUSH_ADDRESS 
             || cmd == CMD_FJ 
             || cmd == CMD_JUMP
+            || cmd == CMD_PUSH_FROM_ADDRESS
             || cmd == CMD_PUSH_ANY)
         {
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
         }
         else if (cmd == CMD_SET_TO_ADDRESS 
-            || cmd == CMD_PUSH_FROM_ADDRESS 
             || cmd == CMD_RUN 
             || cmd == CMD_RETURN)
         {
@@ -155,10 +155,12 @@ void run_mua()
         }
         else if (cmd == CMD_PUSH_FROM_ADDRESS)
         {
-            temp_int = (int*) (mua + cmd_address);
-            memcpy(stack_top, segment_offset + temp_int[0], temp_int[1]);
-            cmd_address += 8;
-            stack_top += temp_int[1];
+            int size = * (int*) (mua + cmd_address);
+            stack_top -= 4;
+            temp_int = (int*) stack_top;
+            memcpy(stack_top, segment_offset + temp_int[0], size);
+            cmd_address += 4;
+            stack_top += size;
         }
         else if (cmd == CMD_FJ)
         {
