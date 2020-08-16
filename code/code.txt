@@ -1,20 +1,9 @@
 
 
-int test007()
-{
-    int k;
-    k = 1;
-    return k;
-}
-
-void test008()
-{
-    print test007();
-}
-
 
 void main()
 {
-    test008();
-    print 2;
+    int a[4];
+    a[1 + 2] = 998;
+    print a[2 + 1];
 }

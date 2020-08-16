@@ -71,11 +71,14 @@ rd.type = token.type
 code(CMD_PUSH_INT, var_address)
 code(CMD_PUSH_FROM_ADDRESS, DATA_TYPE_SIZE[token.type])
 
-# $Expr1 -> var_id [ int_value ]
+# $Expr1 -> var_id [ $Expr14 ]
 var_address, token = variable_table.get_var(fpd.lexeme)
 rd.type = token.address_type
 data_type_size = DATA_TYPE_SIZE[token.address_type]
-code(CMD_PUSH_INT, var_address + data_type_size * pd[2].value)
+code(CMD_PUSH_INT, data_type_size)
+code(CMD_MUL_INT_INT)
+code(CMD_PUSH_INT, var_address)
+code(CMD_ADD_INT_INT)
 code(CMD_PUSH_FROM_ADDRESS, data_type_size)
 
 # $Expr1 -> $Expr0
@@ -114,10 +117,9 @@ cmd = OPERATOR_CMD[(pd[1].lexeme, token.type, pd[2].type)]
 rd.type = CMD_RETURN_DATA_TYPE[cmd]
 code(cmd)
 
-# $Expr14 -> var_id [ int_value ] = $Expr14
+# $Expr14 -> var_id [ $Expr14 ] = $Expr14
 var_address, token = variable_table.get_var(fpd.lexeme)
-var_address += DATA_TYPE_SIZE[token.address_type] * pd[2].value
-code(CMD_SET_TO_ADDRESS, var_address, DATA_TYPE_SIZE[token.address_type])
+code(CMD_SET_TO_ARRAY, var_address, DATA_TYPE_SIZE[token.address_type])
 
 # $WhileBegin -> while
 loop_begin()

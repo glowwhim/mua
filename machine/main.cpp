@@ -49,7 +49,7 @@ void gen_mua()
             fscanf(rfile, "%d", &d1);
             fwrite(&d1, 4, 1, wfile);
         }
-        else if (cmd == CMD_SET_TO_ADDRESS 
+        else if (cmd == CMD_SET_TO_ARRAY 
             || cmd == CMD_RUN 
             || cmd == CMD_RETURN)
         {
@@ -146,12 +146,15 @@ void run_mua()
             cmd_address += 4;
             stack_top += *temp_int;
         }
-        else if (cmd == CMD_SET_TO_ADDRESS)
+        else if (cmd == CMD_SET_TO_ARRAY)
         {
             temp_int = (int*) (mua + cmd_address);
-            memcpy(segment_offset + temp_int[0], stack_top - temp_int[1], temp_int[1]);
+            int array_address = temp_int[0];
+            int size = temp_int[1];
+            stack_top -= (size + 4);
+            int array_index = * (int*) stack_top;
+            memcpy(segment_offset + array_address + size * array_index, stack_top + 4, size);
             cmd_address += 8;
-            stack_top -= temp_int[1];
         }
         else if (cmd == CMD_PUSH_FROM_ADDRESS)
         {

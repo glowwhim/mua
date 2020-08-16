@@ -70,6 +70,13 @@ void test009()
     print a[3] == 998;
 }
 
+void test010()
+{
+    int a[4];
+    a[1 + 2] = 998;
+    print a[2 + 1] == 998;
+}
+
 void main()
 {
     test001();
@@ -79,4 +86,5 @@ void main()
     test006();
     test008();
     test009();
+    test010();
 }
