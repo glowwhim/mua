@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Tuple
 from defines import *
+from semantics import *
 func_params_type = []
 
 
@@ -40,10 +41,6 @@ def run_func(name, func_params_size):
 
 def add_func(name, r_type):
     pass
-
-
-def _get_code_address(*args):
-    return 0
 
 
 def _loop_begin():
