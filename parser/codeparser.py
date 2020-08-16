@@ -47,17 +47,13 @@ class CodeParser(object):
 	def __init__(self):
 		self.variable_table = VariableTable(None)
 		self.semantics_code = ""
-		self.def_func = {}
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
 		self._env = {
 			"copy": _copy_prop,
-			"add_func": self._add_func,
-			"run_func": self._run_func,
 			"_loop_begin": self._loop_begin,
 			"_fj_begin": self._fj_begin,
 			"_fj_end": self._fj_end,
-			"get_func_return_type": self._get_func_return_type,
 			"clear_func": self._clear_func,
 			"func_params_type": [],
 			"method_params": [],
@@ -76,28 +72,12 @@ class CodeParser(object):
 		self.semantics_code = f.read()
 		f.close()
 
-	def _add_func(self, name, r_type):
-		print "add func", name
-		self.def_func[name] = self._env["code_address"], r_type
-
 	def _clear_func(self):
 		self.variable_table = VariableTable(None)
 		self._env["add_var"] = self.variable_table.add_var
 		self._env["get_var"] = self.variable_table.get_var
 		self._env["add_array"] = self.variable_table.add_array
 		self._env["move_address"] = self.variable_table.move_address
-
-	def _run_func(self, name, func_params_size):
-		if name in self.def_func:
-			self._env["code"](CMD_RUN, self.def_func[name][0], func_params_size)
-		else:
-			self._env["code"](CMD_RUN, 0, func_params_size)
-
-	def _get_func_return_type(self, name):
-		if name in self.def_func:
-			return self.def_func[name][1]
-		else:
-			return DATA_TYPE_INT
 
 	def _loop_begin(self):
 		self.loop_begin_stack.append(self._env["code_address"])
@@ -125,7 +105,7 @@ class CodeParser(object):
 
 	def output_code(self, path):
 		f = open(path, "w")
-		lines = [str(self._env["code_address"]), str(self.def_func["main()"][0])]
+		lines = [str(self._env["code_address"]), str(self._env["def_func"]["main()"][0])]
 		for c in self._env["code_list"]:
 			cmd = c[0]
 			lines.append("%s %s" % (cmd, " ".join([str(s) for s in c[1:]])))

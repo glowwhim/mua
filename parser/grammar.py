@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from typing import Tuple
-from defines import *
 from semantics import *
 func_params_type = []
 
@@ -28,18 +26,6 @@ def clear_func():
 
 
 def add_array(x, y):
-    pass
-
-
-def get_func_return_type(name):
-    return 0
-
-
-def run_func(name, func_params_size):
-    pass
-
-
-def add_func(name, r_type):
     pass
 
 
