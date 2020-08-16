@@ -46,6 +46,7 @@ class CodeParser(object):
 
 	def __init__(self):
 		self.variable_table = VariableTable(None)
+		self.semantics_code = ""
 		self.code_list = []
 		self.code_address = 0
 		self.def_func = {}
@@ -68,6 +69,16 @@ class CodeParser(object):
 		for _s in dir(defines):
 			self._env[_s] = getattr(defines, _s)
 		self._clear_func()
+		self._load_semantics_code()
+
+	def _load_semantics_code(self):
+		import os
+		import sys
+		root_path = os.path.split(sys.argv[0])[0]
+		semantics_path = os.path.join(root_path, "semantics.py")
+		f = open(semantics_path)
+		self.semantics_code = f.read()
+		f.close()
 
 	def _add_func(self, name, r_type):
 		print "add func", name
@@ -116,6 +127,7 @@ class CodeParser(object):
 		self.code_address = 0
 		self.loop_begin_stack = []
 		self.loop_fj_stack = []
+		exec (self.semantics_code, self._env)
 
 	def do_semantics(self, production, rd, pd):
 		# type: (Production, Token, List[Token]) -> None
