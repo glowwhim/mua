@@ -5,12 +5,6 @@ from parser import Production
 import defines
 
 
-def _copy_prop(dst, src):
-	# type: (Token, Token) -> None
-	for s in src.get_all_prop_name():
-		setattr(dst, s, getattr(src, s))
-
-
 class VariableTable(object):
 
 	parent = None  # type: VariableTable
@@ -48,7 +42,6 @@ class CodeParser(object):
 		self.variable_table = VariableTable(None)
 		self.semantics_code = ""
 		self._env = {
-			"copy": _copy_prop,
 			"clear_func": self._clear_func,
 			"func_params_type": [],
 			"method_params": [],
@@ -57,6 +50,7 @@ class CodeParser(object):
 			self._env[_s] = getattr(defines, _s)
 		self._clear_func()
 		self._load_semantics_code()
+		exec (self.semantics_code, self._env)
 
 	def _load_semantics_code(self):
 		import os
@@ -76,7 +70,7 @@ class CodeParser(object):
 
 	def do_semantics_start(self):
 		self.variable_table = VariableTable(None)
-		exec (self.semantics_code, self._env)
+		self._env["do_semantics_start"]()
 
 	def do_semantics(self, production, rd, pd):
 		# type: (Production, Token, List[Token]) -> None

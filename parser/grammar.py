@@ -17,10 +17,6 @@ def move_address(offset):
     pass
 
 
-def _add_func_params_type(_type):
-    pass
-
-
 def clear_func():
     pass
 

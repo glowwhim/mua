@@ -9,6 +9,17 @@ loop_begin_stack = []
 loop_fj_stack = []
 
 
+def do_semantics_start():
+	global code_address
+	global code_list
+	global loop_begin_stack
+	global loop_fj_stack
+	code_address = 0
+	code_list = []
+	loop_begin_stack = []
+	loop_fj_stack = []
+
+
 def loop_begin():
 	loop_begin_stack.append(code_address)
 
