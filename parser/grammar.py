@@ -144,7 +144,7 @@ variable_table.add_var(pd[3])
 # $FuncDefHead -> data_type var_id ( )
 # $FuncDefHead -> data_type var_id ( $FuncDefHeadParams )
 add_func("%s(%s)" % (pd[1].lexeme, ",".join([str(i) for i in func_params_type])), fpd.type)
-variable_table.move_address(4)
+variable_table.move_address(8)
 
 # $FuncDef -> $FuncDefHead { $StatementList }
 func_params_size = sum([DATA_TYPE_SIZE[i] for i in func_params_type])

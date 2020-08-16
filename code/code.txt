@@ -1,15 +1,20 @@
 
+
+int test007()
+{
+    int k;
+    k = 1;
+    return k;
+}
+
+void test008()
+{
+    print test007();
+}
+
+
 void main()
 {
-    int a;
-    int b;
-    a = 0;
-    b = 1;
-    while (b < 101)
-    {
-        a = a + b;
-        b = b + 1;
-    }
-    print b;
-    return 0;
+    test008();
+    print 2;
 }
