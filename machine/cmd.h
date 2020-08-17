@@ -68,3 +68,4 @@ const int CMD_SET_INT_FLOAT = 66;
 const int CMD_SET_FLOAT_CHAR = 67;
 const int CMD_SET_FLOAT_INT = 68;
 const int CMD_SET_FLOAT_FLOAT = 69;
+const int CMD_SET_ADDRESS_ADDRESS = 70;

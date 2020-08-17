@@ -1,13 +1,9 @@
 
 
-void test009()
-{
-    int a[4];
-    a[3] = 998;
-    print a[3];
-}
-
 void main()
 {
-    test009();
+    char a[1];
+    char *p;
+    p = a;
+    print a == p;
 }

@@ -78,6 +78,7 @@ void gen_mua()
             || cmd == CMD_SET_FLOAT_FLOAT
             || cmd == CMD_SET_INT_INT
             || cmd == CMD_SET_CHAR_CHAR
+            || cmd == CMD_SET_ADDRESS_ADDRESS
             || cmd == CMD_ADD_INT_FLOAT 
             || cmd == CMD_PRINT_CHAR
             || cmd == CMD_PRINT_INT
@@ -286,6 +287,15 @@ void run_mua()
             stack_top -= 8;
         }
         else if (cmd == CMD_SET_INT_INT)
+        {
+            temp_int = (int*) (stack_top - 8);
+            int i = temp_int[0];
+            int j = temp_int[1];
+            //printf("set %d to %d\n", i, j);
+            ((int*) (segment_offset + j))[0] = i;
+            stack_top -= 8;
+        }
+        else if (cmd == CMD_SET_ADDRESS_ADDRESS)
         {
             temp_int = (int*) (stack_top - 8);
             int i = temp_int[0];

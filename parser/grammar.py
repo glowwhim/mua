@@ -42,6 +42,12 @@ pd[1].type = fpd.type
 variable_table.add_var(pd[1])
 code(CMD_PUSH_ANY, DATA_TYPE_SIZE[fpd.type])
 
+# $DataDef -> data_type * var_id ;
+pd[2].type = DATA_TYPE_ADDRESS
+pd[2].address_type = fpd.type
+variable_table.add_var(pd[2])
+code(CMD_PUSH_ANY, DATA_TYPE_SIZE[DATA_TYPE_ADDRESS])
+
 # $MethodExprParams -> $Expr14
 method_params = [fpd.type]
 

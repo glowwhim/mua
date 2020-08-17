@@ -77,6 +77,14 @@ void test010()
     print a[2 + 1] == 998;
 }
 
+void test011()
+{
+    char a[1];
+    char *p;
+    p = a;
+    print a == p;
+}
+
 void main()
 {
     test001();
@@ -87,4 +95,5 @@ void main()
     test008();
     test009();
     test010();
+    test011();
 }
