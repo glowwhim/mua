@@ -111,6 +111,7 @@ code(CMD_PUSH_ADDRESS, var_address)
 
 # $Expr3 -> $Expr3 * $Expr2
 # $Expr4 -> $Expr4 + $Expr3
+# $Expr4 -> $Expr4 - $Expr3
 # $Expr6 -> $Expr6 < $Expr5
 # $Expr7 -> $Expr7 == $Expr6
 cmd = OPERATOR_CMD[(pd[1].lexeme, pd[0].type, pd[2].type)]
@@ -133,7 +134,7 @@ code(CMD_SET_TO_ARRAY, DATA_TYPE_SIZE[token.address_type])
 # $IfHead -> if ( $Expr14 )
 fj_begin()
 
-# $If -> $IfHead $Expr14 ;
+# $If -> $IfHead $Statement
 # $If -> $IfHead { $StatementList }
 fj_end()
 

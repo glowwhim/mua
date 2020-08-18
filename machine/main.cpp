@@ -73,6 +73,7 @@ void gen_mua()
         }
         else if (cmd == CMD_MUL_INT_INT 
             || cmd == CMD_ADD_INT_INT 
+            || cmd == CMD_SUB_INT_INT 
             || cmd == CMD_ADD_ADDRESS_INT
             || cmd == CMD_MUL_INT_FLOAT 
             || cmd == CMD_SET_FLOAT_FLOAT
@@ -247,6 +248,13 @@ void run_mua()
             temp_int = (int*) (stack_top - 8);
             //printf("%d + %d = %d\n", temp_int[0], temp_int[1], temp_int[0] + temp_int[1]);
             temp_int[0] = temp_int[0] + temp_int[1];
+            stack_top -= 4;
+        }
+        else if (cmd == CMD_SUB_INT_INT)
+        {
+            temp_int = (int*) (stack_top - 8);
+            //printf("%d + %d = %d\n", temp_int[0], temp_int[1], temp_int[0] + temp_int[1]);
+            temp_int[0] = temp_int[0] - temp_int[1];
             stack_top -= 4;
         }
         else if (cmd == CMD_MUL_INT_FLOAT)
