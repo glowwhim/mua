@@ -144,7 +144,7 @@ loop_begin()
 # $WhileCondition -> $WhileBegin ( $Expr14 )
 fj_begin()
 
-# $While -> $WhileCondition $Expr14 ;
+# $While -> $WhileCondition $Statement
 # $While -> $WhileCondition { $StatementList }
 loop_end()
 fj_end()
