@@ -3,6 +3,7 @@ from defines import *
 
 
 KEYWORD = [
+	SYMBOL_IF,
 	SYMBOL_WHILE,
 	SYMBOL_PRINT,
 	SYMBOL_RETURN,

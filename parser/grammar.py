@@ -130,6 +130,13 @@ code(CMD_PUSH_INT, var_address)
 code(CMD_PUSH_FROM_SEGMENT, 4)
 code(CMD_SET_TO_ARRAY, DATA_TYPE_SIZE[token.address_type])
 
+# $IfHead -> if ( $Expr14 )
+fj_begin()
+
+# $If -> $IfHead $Expr14 ;
+# $If -> $IfHead { $StatementList }
+fj_end()
+
 # $WhileBegin -> while
 loop_begin()
 
@@ -186,5 +193,6 @@ func_params_type = []
 # $Statement -> $DataDef
 # $Statement -> $ArrayDef
 # $Statement -> $While
+# $Statement -> $If
 # $StatementList -> $Statement
 # $StatementList -> $StatementList $Statement

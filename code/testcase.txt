@@ -124,6 +124,14 @@ void test014()
     print s == 55;
 }
 
+void test015()
+{
+    int a;
+    a = 1;
+    if (3 == 1 + 2) a = 3;
+    print a == 3;
+}
+
 void main()
 {
     test001();
@@ -137,4 +145,5 @@ void main()
     test011();
     test013();
     test014();
+    test015();
 }
