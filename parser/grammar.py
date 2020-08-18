@@ -137,9 +137,11 @@ loop_begin()
 fj_begin()
 
 # $While -> $WhileCondition $Expr14 ;
+loop_end()
 fj_end()
 
 # $While -> $WhileCondition { $StatementList }
+loop_end()
 fj_end()
 
 # $FuncDefHeadParams -> data_type var_id

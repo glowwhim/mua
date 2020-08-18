@@ -35,13 +35,16 @@ def loop_begin():
 	loop_begin_stack.append(code_address)
 
 
+def loop_end():
+	code(CMD_JUMP, loop_begin_stack.pop())
+
+
 def fj_begin():
 	loop_fj_stack.append(len(code_list))
 	code(CMD_FJ, 0)
 
 
 def fj_end():
-	code(CMD_JUMP, loop_begin_stack.pop())
 	code_list[loop_fj_stack.pop()][1] = code_address
 
 
