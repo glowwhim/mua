@@ -1,9 +1,17 @@
-
+int test(int *a, int i)
+{
+    int b[3];
+    b[0] = 201;
+    b[1] = 202;
+    b[2] = 203;
+    return a[i];
+}
 
 void main()
 {
-    char a[1];
-    char *p;
-    p = a;
-    print a == p;
+    int a[3];
+    a[0] = 101;
+    a[1] = 102;
+    a[2] = 103;
+    print test(a, 2);
 }

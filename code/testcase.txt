@@ -85,6 +85,24 @@ void test011()
     print a == p;
 }
 
+int test012(int *a, int i)
+{
+    int b[3];
+    b[0] = 201;
+    b[1] = 202;
+    b[2] = 203;
+    return a[i];
+}
+
+void test013()
+{
+    int a[3];
+    a[0] = 101;
+    a[1] = 102;
+    a[2] = 103;
+    print test012(a, 2) == 103;
+}
+
 void main()
 {
     test001();
@@ -96,4 +114,5 @@ void main()
     test009();
     test010();
     test011();
+    test013();
 }

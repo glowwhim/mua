@@ -147,10 +147,22 @@ func_params_type = [fpd.type]
 pd[1].type = fpd.type
 variable_table.add_var(pd[1])
 
+# $FuncDefHeadParams -> data_type * var_id
+func_params_type = [DATA_TYPE_ADDRESS]
+pd[2].type = DATA_TYPE_ADDRESS
+pd[2].address_type = fpd.type
+variable_table.add_var(pd[2])
+
 # $FuncDefHeadParams -> $FuncDefHeadParams , data_type var_id
 func_params_type.append(pd[2].type)
 pd[3].type = pd[2].type
 variable_table.add_var(pd[3])
+
+# $FuncDefHeadParams -> $FuncDefHeadParams , data_type * var_id
+func_params_type.append(DATA_TYPE_ADDRESS)
+pd[4].type = DATA_TYPE_ADDRESS
+pd[4].address_type = pd[2].type
+variable_table.add_var(pd[4])
 
 # $FuncDefHead -> data_type var_id ( )
 # $FuncDefHead -> data_type var_id ( $FuncDefHeadParams )
