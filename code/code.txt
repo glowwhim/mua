@@ -36,5 +36,11 @@ void main()
         print num[i];
         i = i + 1;
     }
-    print 5 - 3;
+    sort(num, 4);
+    i = 0;
+    while (i < 4)
+    {
+        print num[i];
+        i = i + 1;
+    }
 }

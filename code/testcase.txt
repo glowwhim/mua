@@ -132,6 +132,48 @@ void test015()
     print a == 3;
 }
 
+void test016(int *num, int len)
+{
+    int i;
+    int chg;
+    int temp;
+    chg = 1;
+    while (chg == 1)
+    {
+        chg = 0;
+        i = 1;
+        while (i < len)
+        {
+            if (num[i] < num[i - 1])
+            {
+                chg = 1;
+                temp = num[i - 1];
+                num[i - 1] = num[i];
+                num[i] = temp;
+            }
+            i = i + 1;
+        }
+    }
+}
+
+void test017()
+{
+    int num[4];
+    num[0] = 2;
+    num[1] = 5;
+    num[2] = 1;
+    num[3] = 4;
+    int i;
+    i = 0;
+    test016(num, 4);
+    i = 0;
+    while (i < 4)
+    {
+        i = i + 1;
+    }
+    print num[3] == 5;
+}
+
 void main()
 {
     test001();
@@ -146,4 +188,5 @@ void main()
     test013();
     test014();
     test015();
+    test017();
 }
