@@ -103,6 +103,27 @@ void test013()
     print test012(a, 2) == 103;
 }
 
+void test014()
+{
+    int a[10];
+    int i;
+    i = 0;
+    while (i < 10)
+    {
+        a[i] = i + 1;
+        i = i + 1;
+    }
+    int s;
+    s = 0;
+    i = 0;
+    while (i < 10)
+    {
+        s = s + a[i];
+        i = i + 1;
+    }
+    print s == 55;
+}
+
 void main()
 {
     test001();
@@ -115,4 +136,5 @@ void main()
     test010();
     test011();
     test013();
+    test014();
 }

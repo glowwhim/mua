@@ -1,17 +1,22 @@
-int test(int *a, int i)
-{
-    int b[3];
-    b[0] = 201;
-    b[1] = 202;
-    b[2] = 203;
-    return a[i];
-}
+
 
 void main()
 {
-    int a[3];
-    a[0] = 101;
-    a[1] = 102;
-    a[2] = 103;
-    print test(a, 2);
+    int a[10];
+    int i;
+    i = 0;
+    while (i < 10)
+    {
+        a[i] = i + 1;
+        i = i + 1;
+    }
+    int s;
+    s = 0;
+    i = 0;
+    while (i < 10)
+    {
+        s = s + a[i];
+        i = i + 1;
+    }
+    print s;
 }
